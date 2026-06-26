@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NOMAD", "NOMAD\NOMAD.csproj", "{AB9F27B3-0257-4D74-A614-03EAEB80960A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB9F27B3-0257-4D74-A614-03EAEB80960A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB9F27B3-0257-4D74-A614-03EAEB80960A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB9F27B3-0257-4D74-A614-03EAEB80960A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB9F27B3-0257-4D74-A614-03EAEB80960A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5EE09B61-34A0-4BA7-85A8-BDE207A459EC}
+	EndGlobalSection
+EndGlobal

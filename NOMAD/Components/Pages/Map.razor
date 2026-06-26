@@ -1,0 +1,737 @@
+@page "/map"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NOMAD.Services
+@using NOMAD.Models
+@attribute [Authorize]
+@rendermode InteractiveServer
+@inject MapService MapData
+@inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
+
+<PageTitle>NOMAD — AI Route Intelligence & Live Maps</PageTitle>
+
+<div class="map-page-container animate-fadeIn">
+    <div class="dashboard-header" style="margin-bottom: 1.5rem;">
+        <h1 class="text-gradient">AI Route Intelligence & Live Maps</h1>
+        <p class="dashboard-subtitle">Intelligent path optimization, multi-city tracking, and real-time safe navigation.</p>
+    </div>
+
+    <div class="map-layout">
+
+        <div class="hud-panel left-hud glass-panel">
+            <h3 class="panel-heading"><i class="bi bi-compass-fill text-accent"></i> NAV COMPASS</h3>
+
+            <div class="hud-section">
+                <label class="nomad-label">GPS SATELLITE UPLINK</label>
+                <div class="gps-status-card">
+                    <div class="gps-core-info">
+                        <span class="feed-dot blink-green"></span>
+                        <div class="gps-details">
+                            <strong>Uplink Active</strong>
+                            <span>LAT: @currentLoc.Lat.ToString("F4") • LNG: @currentLoc.Lng.ToString("F4")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hud-section mt-4">
+                <label class="nomad-label">INTELLIGENCE LAYERS</label>
+                <div class="layer-buttons">
+                    <button class="layer-btn @(showPlaces ? "active" : "")" @onclick="TogglePlaces">
+                        <i class="bi bi-pin-map-fill"></i> Nearby Safe Havens
+                    </button>
+                    <button class="layer-btn @(showRoute ? "active" : "")" @onclick="ToggleRoute">
+                        <i class="bi bi-bezier2"></i> Secure Extraction Route
+                    </button>
+                    <button class="layer-btn @(showHeatmap ? "active" : "")" @onclick="ToggleHeatmap">
+                        <i class="bi bi-fire"></i> Danger Heatmap
+                    </button>
+                </div>
+            </div>
+
+            <div class="hud-section mt-4 flex-grow-1">
+                <label class="nomad-label">ROUTE CHECKPOINTS (@(plannedJourney?.Checkpoints.Count ?? 0))</label>
+                <div class="checkpoint-list scroll-container">
+                    @if (plannedJourney != null && plannedJourney.Checkpoints.Any())
+                    {
+                        @foreach (var cp in plannedJourney.Checkpoints)
+                        {
+                            <div class="checkpoint-item">
+                                <div class="cp-indicator">
+                                    <i class="bi bi-check-circle-fill" style="color: var(--color-success);"></i>
+                                </div>
+                                <div class="cp-details">
+                                    <span class="cp-name">@cp.Name</span>
+                                    <span class="cp-status">@cp.Status • @cp.SafetyRating</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="placeholder-text-small text-center py-4 opacity-75">
+                            <i class="bi bi-geo-fill d-block mb-2 style-muted"></i>
+                            Plot a route to boot checkpoint tracking.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="hud-section mt-4 pt-3 border-top-divider">
+                <label class="nomad-label">OFFLINE STORAGE</label>
+                @if (cacheSuccess)
+                {
+                    <div class="alert alert-success mt-2 d-flex align-items-center" style="background: rgba(64,145,108,0.1); border: 1px solid rgba(64,145,108,0.25); color: var(--color-success); font-size: 0.8rem; padding: 0.5rem 0.75rem; border-radius: var(--border-radius-sm);">
+                        <i class="bi bi-cloud-arrow-down-fill me-2"></i> Route Cache Downloaded
+                    </div>
+                }
+                else
+                {
+                    <button class="nomad-btn w-100 secondary-action" @onclick="DownloadOfflineCache" disabled="@isCaching">
+                        @if (isCaching)
+                        {
+                            <span><span class="spinner me-2"></span>Caching...</span>
+                        }
+                        else
+                        {
+                            <span><i class="bi bi-hdd-fill me-1"></i> Cache Offline Route</span>
+                        }
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="map-viewer glass-panel">
+            <div id="nomadMap" class="leaflet-canvas"></div>
+
+            <div class="hud-top-left">
+                <div class="hud-badge"><i class="bi bi-alt me-1 text-success"></i> GPS ALT: 412M</div>
+                <div class="hud-badge"><i class="bi bi-activity me-1 text-success"></i> HDOP: 0.82</div>
+            </div>
+            <div class="hud-top-right">
+                <div class="hud-badge security-alert"><i class="bi bi-shield-lock-fill text-accent"></i> ENCRYPTED UPLINK</div>
+            </div>
+        </div>
+
+        <div class="right-hud-wrapper">
+            <div class="hud-panel glass-panel full-height-card">
+                <h3 class="panel-heading"><i class="bi bi-cpu-fill text-accent"></i> AI ROUTE PLANNER</h3>
+
+                <div class="hud-section">
+                    <div class="form-group-nomad">
+                        <label class="nomad-label">TARGET DESTINATION</label>
+                        <div class="input-with-icon">
+                            <i class="bi bi-search search-icon-left"></i>
+                            <InputText class="nomad-input" style="padding-left: 2.25rem;" @bind-Value="searchDestination" placeholder="E.g., Kyoto, Japan" />
+                        </div>
+                    </div>
+
+                    <div class="form-group-nomad mt-3">
+                        <label class="nomad-label">ROUTING STRATEGY</label>
+                        <InputSelect class="nomad-input" @bind-Value="routeStrategy">
+                            <option value="Safest">🛡️ Safest Path (Avoid Dangers)</option>
+                            <option value="Shortest">⚡ Shortest Path (Fastest Vector)</option>
+                            <option value="Budget">💰 Budget & Eco-Friendly Route</option>
+                        </InputSelect>
+                    </div>
+
+                    <div class="form-group-nomad mt-3">
+                        <label class="nomad-checkbox-row custom-toggle-container">
+                            <InputCheckbox @bind-Value="avoidDangers" />
+                            <span class="custom-toggle-label">Avoid dangerous zones & heatmaps</span>
+                        </label>
+                    </div>
+
+                    <button class="nomad-btn primary-action w-100 mt-4" @onclick="PlotAIRoute">
+                        <i class="bi bi-bezier me-1"></i> PLOT OPTIMIZED PATH
+                    </button>
+                </div>
+
+                @if (plannedJourney != null)
+                {
+                    <div class="hud-section mt-4 border-top-divider animate-fadeIn">
+                        <label class="nomad-label mt-3">AI PATH INTELLIGENCE REPORT</label>
+
+                        <div class="path-metrics-grid">
+                            <div class="metric-card">
+                                <span class="m-label">EST. COST</span>
+                                <strong class="m-val">$@plannedJourney.EstimatedCost.ToString("N2")</strong>
+                            </div>
+                            <div class="metric-card">
+                                <span class="m-label">EST. DURATION</span>
+                                <strong class="m-val text-accent">@plannedJourney.EstimatedTime</strong>
+                            </div>
+                        </div>
+
+                        <div class="transport-rec-card mt-3">
+                            <div class="tr-header">
+                                <i class="bi bi-airplane-fill"></i>
+                                <strong>RECOMMENDED TRANSPORT</strong>
+                            </div>
+                            <p class="tr-desc">@plannedJourney.RecommendedTransport</p>
+                        </div>
+
+                        <div class="attractions-card mt-3">
+                            <label class="nomad-label-small">SUGGESTED NATURAL WONDERS</label>
+                            <ul class="wonders-list">
+                                @foreach (var wonder in plannedJourney.Attractions)
+                                {
+                                    <li><i class="bi bi-tree-fill me-1"></i> @wonder</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="hud-section mt-4 border-top-divider text-center d-flex flex-column align-items-center justify-content-center" style="padding-top: 2.5rem; padding-bottom: 2.5rem;">
+                        <i class="bi bi-cpu-fill text-gradient mb-2" style="font-size: 2.5rem; opacity: 0.25;"></i>
+                        <p class="placeholder-text px-3 text-muted" style="font-size: 0.85rem; margin: 0;">Enter target coordinates above to execute path analysis.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .map-page-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 120px);
+    }
+
+    .map-layout {
+        display: grid;
+        grid-template-columns: 310px 1fr 345px;
+        gap: 1.5rem;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .right-hud-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .full-height-card {
+        max-height: 100% !important; 
+        overflow-y: visible !important; 
+        height: 100%;
+    }
+
+    @@media (max-width: 1280px) {
+        .map-layout {
+            grid-template-columns: 300px 1fr;
+        }
+
+        .right-hud-wrapper {
+            grid-column: span 2;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .map-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .left-hud, .right-hud-wrapper {
+            grid-column: span 1;
+            max-height: none !important;
+        }
+
+        .map-viewer {
+            height: 450px !important;
+        }
+    }
+
+    .hud-panel {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
+    }
+
+    .panel-heading {
+        font-family: var(--font-heading);
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--color-primary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .hud-section {
+        width: 100%;
+    }
+
+    .border-top-divider {
+        border-top: 1px solid rgba(15, 23, 42, 0.08);
+        padding-top: 1.5rem;
+    }
+
+    .gps-status-card {
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        padding: 0.85rem 1rem;
+        border-radius: var(--border-radius-sm);
+    }
+
+    .gps-core-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .gps-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .gps-details strong {
+            font-size: 0.9rem;
+            color: #0f172a;
+        }
+
+        .gps-details span {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+    .layer-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .layer-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.45);
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        padding: 10px 14px;
+        border-radius: var(--border-radius-sm);
+        color: #475569;
+        font-weight: 500;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: left;
+        width: 100%;
+    }
+
+        .layer-btn:hover {
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--color-primary);
+            border-color: rgba(45, 74, 67, 0.15);
+        }
+
+        .layer-btn.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-color: rgba(45, 74, 67, 0.25);
+            font-weight: 600;
+        }
+
+    .checkpoint-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 180px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+
+    .checkpoint-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.45);
+        border: 1px solid rgba(15, 23, 42, 0.04);
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+
+    .cp-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cp-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .cp-status {
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+
+    .map-viewer {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--border-radius-lg);
+        height: 100%;
+        min-height: 480px;
+    }
+
+    .leaflet-canvas {
+        width: 100%;
+        height: 100%;
+        min-height: 480px;
+        z-index: 1;
+    }
+
+    .hud-top-left {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .hud-top-right {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+    }
+
+    .hud-badge {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: #334155;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+        .hud-badge.security-alert {
+            color: var(--color-success);
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+    .input-with-icon {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-icon-left {
+        position: absolute;
+        left: 0.85rem;
+        color: #94a3b8;
+        z-index: 3;
+        font-size: 0.9rem;
+        pointer-events: none;
+    }
+
+    .custom-toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .custom-toggle-label {
+        font-size: 0.88rem;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    .path-metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .metric-card {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(15, 23, 42, 0.05);
+        padding: 10px;
+        border-radius: var(--border-radius-sm);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .m-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #64748b;
+        letter-spacing: 0.5px;
+    }
+
+    .m-val {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-top: 2px;
+        font-family: monospace;
+    }
+
+    .transport-rec-card {
+        background: rgba(226, 167, 111, 0.08);
+        border: 1px solid rgba(226, 167, 111, 0.25);
+        padding: 12px 14px;
+        border-radius: var(--border-radius-sm);
+    }
+
+    .tr-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--color-accent);
+        font-size: 0.8rem;
+    }
+
+    .tr-desc {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-top: 4px;
+        margin-bottom: 0;
+    }
+
+    .wonders-list {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+        .wonders-list li {
+            font-size: 0.85rem;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .wonders-list li i {
+                color: var(--color-success);
+            }
+
+    .placeholder-text-small {
+        font-size: 0.8rem;
+        color: #64748b;
+        text-align: center;
+        padding: 1rem 0;
+    }
+
+    .scroll-container::-webkit-scrollbar {
+        width: 4px;
+    }
+</style>
+
+@code {
+    private MapLocation currentLoc = new();
+    private bool showPlaces = false;
+    private bool showRoute = false;
+    private bool showHeatmap = false;
+
+    private string searchDestination = "Kyoto, Japan";
+    private string routeStrategy = "Safest";
+    private bool avoidDangers = true;
+    private AIJourneyPlan? plannedJourney;
+
+    private bool isCaching = false;
+    private bool cacheSuccess = false;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private ApplicationUser? currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState != null)
+        {
+            var authState = await AuthState;
+            var userPrincipal = authState.User;
+            if (userPrincipal.Identity?.IsAuthenticated == true)
+            {
+                currentUser = await UserManager.GetUserAsync(userPrincipal);
+            }
+        }
+
+        var city = currentUser?.ActiveDestination ?? "Istanbul";
+        var country = currentUser?.ActiveCountry ?? "Turkey";
+        currentLoc = MapData.GetCurrentLocation(city, country);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("nomadMap.initMap", "nomadMap", currentLoc.Lat, currentLoc.Lng, 13);
+        }
+    }
+
+    private async Task TogglePlaces()
+    {
+        showPlaces = !showPlaces;
+        if (showPlaces)
+        {
+            var city = plannedJourney != null ? plannedJourney.Destination : (currentUser?.ActiveDestination ?? "Istanbul");
+            var places = MapData.GetNearbyPlaces(city, "");
+            if (plannedJourney != null && plannedJourney.NearbyPOIs.Any())
+            {
+                places = plannedJourney.NearbyPOIs;
+            }
+
+            var mappedPlaces = places.Select(p => new
+            {
+                title = p.Title,
+                description = p.Description,
+                lat = p.Lat,
+                lng = p.Lng,
+                type = p.Type
+            }).ToList();
+            await JS.InvokeVoidAsync("nomadMap.addPlaces", mappedPlaces);
+        }
+        else
+        {
+            await ReplotLayerState();
+        }
+    }
+
+    private async Task ToggleRoute()
+    {
+        showRoute = !showRoute;
+        if (showRoute)
+        {
+            if (plannedJourney != null)
+            {
+                await JS.InvokeVoidAsync("nomadMap.drawRoute", plannedJourney.RouteCoordinates, "#e2a76f");
+            }
+            else
+            {
+                var city = currentUser?.ActiveDestination ?? "Istanbul";
+                var country = currentUser?.ActiveCountry ?? "Turkey";
+                var route = MapData.GetActiveRoute(city, country);
+                await JS.InvokeVoidAsync("nomadMap.drawRoute", route.Coordinates, route.Color);
+            }
+        }
+        else
+        {
+            await ReplotLayerState();
+        }
+    }
+
+    private async Task ToggleHeatmap()
+    {
+        showHeatmap = !showHeatmap;
+        if (showHeatmap)
+        {
+            var city = plannedJourney != null ? plannedJourney.Destination : (currentUser?.ActiveDestination ?? "Istanbul");
+            var dangerZones = MapData.GetDangerHeatmap(city, "");
+            if (plannedJourney != null && plannedJourney.LocalDangers.Any())
+            {
+                dangerZones = plannedJourney.LocalDangers;
+            }
+            await JS.InvokeVoidAsync("nomadMap.addHeatmap", dangerZones);
+        }
+        else
+        {
+            await ReplotLayerState();
+        }
+    }
+
+    private async Task PlotAIRoute()
+    {
+        if (string.IsNullOrWhiteSpace(searchDestination)) return;
+        var origin = currentUser?.ActiveDestination ?? "Istanbul";
+        plannedJourney = MapData.GenerateAIJourney(origin, searchDestination, routeStrategy, avoidDangers);
+
+        showPlaces = true;
+        showRoute = true;
+        showHeatmap = true;
+        cacheSuccess = false;
+
+        await JS.InvokeVoidAsync("nomadMap.clearOverlays");
+        await JS.InvokeVoidAsync("nomadMap.recenterMap", plannedJourney.RouteCoordinates[0][0], plannedJourney.RouteCoordinates[0][1]);
+        await JS.InvokeVoidAsync("nomadMap.drawRoute", plannedJourney.RouteCoordinates, "#e2a76f");
+        var mappedPlaces = plannedJourney.NearbyPOIs.Select(p => new
+        {
+            title = p.Title,
+            description = p.Description,
+            lat = p.Lat,
+            lng = p.Lng,
+            type = p.Type
+        }).ToList();
+        await JS.InvokeVoidAsync("nomadMap.addPlaces", mappedPlaces);
+        await JS.InvokeVoidAsync("nomadMap.addHeatmap", plannedJourney.LocalDangers);
+
+        StateHasChanged();
+    }
+
+    private async Task ReplotLayerState()
+    {
+        await JS.InvokeVoidAsync("nomadMap.clearOverlays");
+        if (showPlaces)
+        {
+            var places = plannedJourney != null ? plannedJourney.NearbyPOIs : MapData.GetNearbyPlaces(currentUser?.ActiveDestination ?? "Istanbul", "");
+            var mappedPlaces = places.Select(p => new
+            {
+                title = p.Title,
+                description = p.Description,
+                lat = p.Lat,
+                lng = p.Lng,
+                type = p.Type
+            }).ToList();
+            await JS.InvokeVoidAsync("nomadMap.addPlaces", mappedPlaces);
+        }
+
+        if (showRoute)
+        {
+            if (plannedJourney != null)
+            {
+                await JS.InvokeVoidAsync("nomadMap.drawRoute", plannedJourney.RouteCoordinates, "#e2a76f");
+            }
+            else
+            {
+                var route = MapData.GetActiveRoute(currentUser?.ActiveDestination ?? "Istanbul", "");
+                await JS.InvokeVoidAsync("nomadMap.drawRoute", route.Coordinates, route.Color);
+            }
+        }
+
+        if (showHeatmap)
+        {
+            var dangers = plannedJourney != null ? plannedJourney.LocalDangers : MapData.GetDangerHeatmap(currentUser?.ActiveDestination ?? "Istanbul", "");
+            await JS.InvokeVoidAsync("nomadMap.addHeatmap", dangers);
+        }
+    }
+
+    private async Task DownloadOfflineCache()
+    {
+        isCaching = true;
+        StateHasChanged();
+
+        await Task.Delay(1800);
+
+        isCaching = false;
+        cacheSuccess = true;
+        StateHasChanged();
+    }
+}

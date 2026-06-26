@@ -1,0 +1,215 @@
+@page "/"
+@page "/login"
+@layout AuthLayout
+@attribute [AllowAnonymous]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager Navigation
+@inject IHttpContextAccessor HttpContextAccessor
+
+<PageTitle>NOMAD — Login</PageTitle>
+
+<div class="auth-hero">
+    <div class="auth-hero-bg" style="background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80');"></div>
+    <div class="auth-hero-content">
+        <h1>Calm, Safe, and Adventurous.</h1>
+        <p style="font-size: 1.25rem; opacity: 0.95; line-height: 1.6; font-family: var(--font-body);">Your premium travel companion. Connect to real-time route intelligence, emergency SOS networks, and automated expense planning.</p>
+    </div>
+</div>
+
+<div class="auth-form-side">
+    <div class="auth-card glass-panel animate-fadeIn">
+        <div class="auth-logo">
+            <h1 class="text-gradient">NOMAD</h1>
+            <p>Travel Intelligence System</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="alert alert-success d-flex align-items-center animate-fadeIn" role="alert" style="background: rgba(64, 145, 108, 0.1); border: 1px solid rgba(64, 145, 108, 0.25); color: var(--color-primary); border-radius: var(--border-radius-sm); font-size: 0.9rem; padding: 0.75rem 1rem; margin-bottom: 1.5rem;">
+                <i class="bi bi-check-circle-fill me-2" style="color: var(--color-success);"></i>
+                <div>
+                    @successMessage
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert-nomad alert-error animate-fadeIn" style="margin-bottom: 1.5rem;">
+                <i class="bi bi-exclamation-triangle"></i> @errorMessage
+            </div>
+        }
+
+        <EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="LoginForm">
+            <DataAnnotationsValidator />
+
+            <div class="form-group-nomad">
+                <label class="nomad-label">EMAIL ADDRESS</label>
+                <InputText class="nomad-input" @bind-Value="loginModel.Email" placeholder="pilot@nomad.travel" />
+                <ValidationMessage For="@(() => loginModel.Email)" />
+            </div>
+
+            <div class="form-group-nomad">
+                <label class="nomad-label">PASSWORD</label>
+               
+                <div class="nomad-password-wrapper">
+                    <InputText @key="showPassword" type="@(showPassword ? "text" : "password")" class="nomad-input" @bind-Value="loginModel.Password" placeholder="Enter your passkey" />
+                    <button type="button" class="nomad-eye-toggle" @onclick="TogglePasswordVisibility" aria-label="Toggle password visibility">
+                        <i class="bi @(showPassword ? "bi-eye-slash-fill" : "bi-eye-fill")"></i>
+                    </button>
+                </div>
+                <ValidationMessage For="@(() => loginModel.Password)" />
+            </div>
+
+            <div class="remember-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1.5rem;">
+                <label class="nomad-checkbox" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--color-text-body); font-size: 0.9rem;">
+                    <InputCheckbox @bind-Value="loginModel.RememberMe" />
+                    <span>Keep me signed in</span>
+                </label>
+                <a href="/forgot-password" class="auth-link" style="font-size: 0.9rem; font-weight: 600; color: var(--color-accent); text-decoration: none;">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="nomad-btn" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner"></span>
+                }
+                else
+                {
+                    <span><i class="bi bi-shield-lock"></i> INITIATE LOGIN</span>
+                }
+            </button>
+        </EditForm>
+
+        <div class="auth-footer">
+            <p>No account? <a href="/register" class="auth-link">Register as Explorer</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nomad-password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .nomad-password-wrapper .nomad-input {
+        width: 100% !important;
+        padding-right: 46px !important; 
+    }
+
+    .nomad-eye-toggle {
+        position: absolute !important;
+        right: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: none !important;
+        border: none !important;
+        color: #ffffff !important;
+        opacity: 0.65;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 6px !important;
+        z-index: 50 !important;
+        transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .nomad-eye-toggle:hover {
+        opacity: 1 !important;
+        color: #D4AF37 !important; 
+    }
+
+    .nomad-eye-toggle i {
+        font-size: 1.2rem !important;
+        line-height: 1 !important;
+        display: block !important;
+    }
+</style>
+
+@code {
+    [SupplyParameterFromForm]
+    private LoginDto loginModel { get; set; } = new();
+    private string? errorMessage;
+    private string? successMessage;
+    private bool isLoading = false;
+    private bool showPassword = false;
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "registered")]
+    public string? RegisteredQuery { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (RegisteredQuery == "true")
+        {
+            successMessage = "Welcome, Explorer! Account created successfully. Enter your credentials to log in.";
+        }
+
+        if (AuthState != null)
+        {
+            var authState = await AuthState;
+            if (authState.User.Identity?.IsAuthenticated == true)
+            {
+                Navigation.NavigateTo("/dashboard");
+            }
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            var user = await UserManager.FindByEmailAsync(loginModel.Email);
+            if (user == null)
+            {
+                errorMessage = "Invalid credentials. Access denied.";
+                isLoading = false;
+                return;
+            }
+
+            var result = await SignInManager.CheckPasswordSignInAsync(user, loginModel.Password, lockoutOnFailure: false);
+            if (result.Succeeded)
+            {
+                user.LastLoginAt = DateTime.UtcNow;
+                await UserManager.UpdateAsync(user);
+
+                var isPersistent = loginModel.RememberMe;
+                await SignInManager.SignInAsync(user, isPersistent: isPersistent);
+                Navigation.NavigateTo("/dashboard", forceLoad: true);
+            }
+            else
+            {
+                errorMessage = "Invalid credentials. Access denied.";
+            }
+        }
+        catch (Microsoft.AspNetCore.Components.NavigationException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            errorMessage = "System error. Please try again.";
+        }
+
+        isLoading = false;
+    }
+}

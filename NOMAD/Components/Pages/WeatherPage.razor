@@ -1,0 +1,296 @@
+@page "/weather"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NOMAD.Services
+@using NOMAD.Models
+@attribute [Authorize]
+@rendermode InteractiveServer
+@inject WeatherService WeatherAPI
+@inject UserManager<ApplicationUser> UserManager
+
+<PageTitle>NOMAD — Weather Intelligence</PageTitle>
+
+@if (weather == null)
+{
+    <div class="loading-state" style="padding: 5rem 0; text-align: center;">
+        <span class="spinner"></span>
+        <p style="margin-top: 1rem; color: var(--color-primary);">Establishing uplink to meteorological satellites...</p>
+    </div>
+}
+else
+{
+    <div class="weather-container animate-fadeIn weather-bg-@(weather.MainCondition.ToLower())" style="border-radius: var(--border-radius-lg); overflow: hidden; position: relative;">
+
+        <div style="padding: 2.5rem; position: relative; z-index: 10;">
+            <div class="dashboard-header" style="margin-bottom: 2rem;">
+                <h1 class="text-gradient">Atmospheric Intel</h1>
+                <p class="dashboard-subtitle">Live meteorological radar and environmental analysis.</p>
+
+                <div class="weather-search mt-4" style="max-width: 500px; display: flex; gap: 10px;">
+                    <div class="input-with-icon flex-grow-1">
+                        <i class="bi bi-radar search-icon-left"></i>
+                        <input type="text" class="nomad-input" style="padding-left: 2.25rem; background: rgba(255,255,255,0.85);" @bind="searchCity" placeholder="Target coordinates or city..." />
+                    </div>
+                    <button class="nomad-btn primary-action" @onclick="SearchWeather">SCAN</button>
+                </div>
+            </div>
+
+            @if (weather.ActiveAlerts.Any())
+            {
+                <div class="map-layout mb-4" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                    <div class="hud-panel glass-panel alert-pulse" style="background: rgba(216,90,90,0.1); border-color: rgba(216,90,90,0.35);">
+                        <h3 class="panel-heading text-danger mb-3"><i class="bi bi-exclamation-octagon-fill"></i> CRITICAL METEOROLOGICAL ALERTS</h3>
+                        <div class="alerts-list">
+                            @foreach (var alert in weather.ActiveAlerts)
+                            {
+                                <div class="alert alert-danger d-flex align-items-start gap-3 mb-2" style="background: rgba(255,255,255,0.7); border: none; border-left: 4px solid var(--color-danger); color: var(--color-secondary);">
+                                    <i class="bi bi-cloud-lightning-fill text-danger" style="font-size: 1.5rem; margin-top: 2px;"></i>
+                                    <div>
+                                        <strong style="display: block; font-size: 1.05rem;">@alert.Type — @alert.Severity</strong>
+                                        <span style="font-size: 0.9rem;">@alert.Message (Valid: @alert.Timeframe)</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="map-layout mb-4" style="grid-template-columns: 1.2fr 1fr; gap: 1.5rem;">
+
+                <div class="hud-panel glass-panel text-center d-flex flex-column justify-content-center py-4">
+                    <div class="d-flex justify-content-between align-items-center px-4 mb-2">
+                        <h2 style="font-size: 1.6rem; color: var(--color-primary); font-weight: 800; margin: 0;">@weather.City</h2>
+                        <span class="badge @(weather.TravelCondition == "Optimal" ? "bg-success" : "bg-warning")" style="padding: 6px 12px; font-weight: 700; border-radius: 4px;">Vector: @weather.TravelCondition</span>
+                    </div>
+
+                    <div class="weather-hero my-3">
+                        <i class="bi @GetMainIcon(weather.MainCondition)" style="font-size: 5.5rem; color: var(--color-accent); text-shadow: 0 10px 25px rgba(226,167,111,0.25);"></i>
+                        <div class="text-gradient mt-1" style="font-size: 4.5rem; font-weight: 800; line-height: 1; font-family: monospace;">@weather.CurrentTemp°</div>
+                        <div style="font-size: 0.9rem; color: #64748b; font-weight: 700; margin-top: 4px;">Feels like @weather.FeelsLike°</div>
+                    </div>
+
+                    <p class="px-4 opacity-90" style="font-style: italic; font-weight: 500; color: var(--color-secondary);">@weather.Description</p>
+
+                    <div class="path-metrics-grid mt-4 px-4">
+                        <div class="metric-card">
+                            <span class="m-label"><i class="bi bi-droplet-fill text-primary"></i> HUMIDITY</span>
+                            <strong class="m-val">@weather.Humidity%</strong>
+                        </div>
+                        <div class="metric-card">
+                            <span class="m-label"><i class="bi bi-wind text-info"></i> WIND</span>
+                            <strong class="m-val">@weather.WindSpeed km/h</strong>
+                        </div>
+                        <div class="metric-card">
+                            <span class="m-label"><i class="bi bi-brightness-high-fill text-warning"></i> UV INDEX</span>
+                            <strong class="m-val">@weather.UVIndex</strong>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-around mt-4 pt-3 border-top-divider mx-4" style="font-size: 0.9rem; font-weight: 600; color: var(--color-secondary);">
+                        <div><i class="bi bi-sunrise-fill text-accent me-1"></i> Sunrise: @weather.Sunrise</div>
+                        <div><i class="bi bi-sunset-fill text-accent me-1"></i> Sunset: @weather.Sunset</div>
+                    </div>
+                </div>
+
+                <div class="hud-panel glass-panel">
+                    <h3 class="panel-heading"><i class="bi bi-robot text-accent"></i> AI SURVIVAL ADVISOR</h3>
+                    <div class="recommendations-list d-flex flex-column gap-2 mt-3">
+                        @foreach (var rec in weather.AIRecommendations)
+                        {
+                            <div class="checkpoint-item" style="padding: 12px 15px; align-items: flex-start; gap: 12px;">
+                                <i class="bi bi-check2-square text-success" style="font-size: 1.1rem; margin-top: 1px;"></i>
+                                <span style="font-size: 0.9rem; font-weight: 600; color: var(--color-secondary); line-height: 1.4;">@rec</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-layout" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                <div class="hud-panel glass-panel">
+                    <h3 class="panel-heading mb-3"><i class="bi bi-calendar-week text-accent"></i> 7-DAY ATMOSPHERIC PROJECTION</h3>
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1rem;">
+                        @foreach (var day in weather.WeeklyForecast)
+                        {
+                            <div class="forecast-card text-center p-3" style="background: rgba(255,255,255,0.4); border: 1px solid rgba(15,23,42,0.06); border-radius: var(--border-radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 160px;">
+                                <span style="font-weight: 700; color: var(--color-primary); font-size: 0.9rem;">@day.Day</span>
+                                <i class="bi @day.Icon" style="font-size: 1.75rem; color: var(--color-accent); margin: 8px 0;"></i>
+                                <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-secondary); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@day.Condition</span>
+                                <div style="font-family: monospace; font-size: 0.9rem; font-weight: 700; margin-top: 4px;">
+                                    <span style="color: var(--color-primary);">@day.HighTemp°</span>
+                                    <span style="color: #94a3b8; font-weight: 500;">/@day.LowTemp°</span>
+                                </div>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #64748b; margin-top: 5px;"><i class="bi bi-umbrella-fill text-primary" style="font-size: 0.75rem;"></i> @day.PrecipitationChance%</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        @if (weather.MainCondition == "Storm" || weather.MainCondition == "Rain")
+        {
+            <div class="rain-overlay"></div>
+        }
+        @if (weather.MainCondition == "Clouds" || weather.MainCondition == "Storm")
+        {
+            <div class="cloud-overlay"></div>
+        }
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(244,234,218,0.4) 100%); z-index: 1; pointer-events: none;"></div>
+    </div>
+}
+
+@code {
+    private WeatherData? weather;
+    private string searchCity = "Istanbul";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private ApplicationUser? currentUser;
+
+    [Inject] private HttpClient Http { get; set; } = default!;
+
+    private const string WeatherApiKey = "8402acdf686fb222858021c6014e38e2";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState != null)
+        {
+            var authState = await AuthState;
+            var userPrincipal = authState.User;
+            if (userPrincipal.Identity?.IsAuthenticated == true)
+            {
+                currentUser = await UserManager.GetUserAsync(userPrincipal);
+                if (currentUser != null && !string.IsNullOrWhiteSpace(currentUser.ActiveDestination))
+                {
+                    searchCity = currentUser.ActiveDestination;
+                }
+            }
+        }
+        await LoadWeather();
+    }
+
+    private async Task SearchWeather()
+    {
+        if (!string.IsNullOrWhiteSpace(searchCity))
+        {
+            weather = null;
+            await LoadWeather();
+        }
+    }
+
+    private async Task LoadWeather()
+    {
+        try
+        {
+            var currentUrl = $"https://api.openweathermap.org/data/2.5/weather?q={Uri.EscapeDataString(searchCity)}&appid={WeatherApiKey}&units=metric";
+            var currentResponse = await Http.GetFromJsonAsync<System.Text.Json.JsonElement>(currentUrl);
+
+            var forecastUrl = $"https://api.openweathermap.org/data/2.5/forecast?q={Uri.EscapeDataString(searchCity)}&appid={WeatherApiKey}&units=metric";
+            var forecastResponse = await Http.GetFromJsonAsync<System.Text.Json.JsonElement>(forecastUrl);
+
+            if (currentResponse.ValueKind != System.Text.Json.JsonValueKind.Undefined)
+            {
+                var liveData = new WeatherData();
+
+                liveData.City = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(searchCity);
+                liveData.CurrentTemp = (int)Math.Round(currentResponse.GetProperty("main").GetProperty("temp").GetDouble());
+                liveData.FeelsLike = (int)Math.Round(currentResponse.GetProperty("main").GetProperty("feels_like").GetDouble());
+                liveData.Humidity = currentResponse.GetProperty("main").GetProperty("humidity").GetInt32();
+                liveData.WindSpeed = (int)Math.Round(currentResponse.GetProperty("wind").GetProperty("speed").GetDouble());
+
+                string mainCond = currentResponse.GetProperty("weather")[0].GetProperty("main").GetString() ?? "Clear";
+                liveData.MainCondition = mainCond switch
+                {
+                    "Thunderstorm" => "Storm",
+                    "Drizzle" or "Rain" => "Rain",
+                    "Clouds" => "Clouds",
+                    "Clear" => "Clear",
+                    _ => "Clear"
+                };
+
+                liveData.Description = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
+                    currentResponse.GetProperty("weather")[0].GetProperty("description").GetString() ?? "Stable Atmosphere Status"
+                );
+
+                liveData.UVIndex = liveData.MainCondition == "Clear" ? 6 : 2;
+                liveData.TravelCondition = (liveData.MainCondition == "Storm" || liveData.MainCondition == "Rain") ? "Caution" : "Optimal";
+
+                long sunriseStamp = currentResponse.GetProperty("sys").GetProperty("sunrise").GetInt64();
+                long sunsetStamp = currentResponse.GetProperty("sys").GetProperty("sunset").GetInt64();
+                liveData.Sunrise = DateTimeOffset.FromUnixTimeSeconds(sunriseStamp).ToLocalTime().ToString("hh:mm tt");
+                liveData.Sunset = DateTimeOffset.FromUnixTimeSeconds(sunsetStamp).ToLocalTime().ToString("hh:mm tt");
+
+                liveData.ActiveAlerts = liveData.MainCondition == "Storm"
+                    ? new List<WeatherAlert> { new WeatherAlert { Type = "Convective Cells", Severity = "Severe", Message = "High lightning velocity activity tracked.", Timeframe = "Next 4 Hours" } }
+                    : new List<WeatherAlert>();
+
+                liveData.AIRecommendations = new List<string>
+                {
+                    liveData.MainCondition == "Storm" || liveData.MainCondition == "Rain" ? "Deploy standard wet-weather armor gear layouts." : "Atmospheric vectors clear. Operational efficiency maximize.",
+                    "Ensure backup tactical grid communication lines remain online.",
+                    $"Current humidity state ({liveData.Humidity}%) evaluated within expected limits."
+                };
+
+                liveData.WeeklyForecast = new();
+
+                if (forecastResponse.ValueKind != System.Text.Json.JsonValueKind.Undefined && forecastResponse.TryGetProperty("list", out var listElement))
+                {
+                    for (int i = 0; i < listElement.GetArrayLength() && liveData.WeeklyForecast.Count < 7; i += 8)
+                    {
+                        var dayNode = listElement[i];
+                        long dateUnix = dayNode.GetProperty("dt").GetInt64();
+                        string dayName = DateTimeOffset.FromUnixTimeSeconds(dateUnix).ToLocalTime().DayOfWeek.ToString().Substring(0, 3).ToUpper();
+
+                        string dayMainCond = dayNode.GetProperty("weather")[0].GetProperty("main").GetString() ?? "Clear";
+                        string currentDayIcon = dayMainCond switch
+                        {
+                            "Thunderstorm" => "bi-cloud-lightning-rain-fill",
+                            "Rain" or "Drizzle" => "bi-cloud-rain-heavy-fill",
+                            "Clouds" => "bi-clouds-fill",
+                            _ => "bi-sun-fill"
+                        };
+
+                        var forecastItem = Activator.CreateInstance(liveData.WeeklyForecast.GetType().GetGenericArguments()[0]);
+
+                        dynamic dynamicItem = forecastItem!;
+                        dynamicItem.Day = dayName;
+                        dynamicItem.Icon = currentDayIcon;
+                        dynamicItem.Condition = dayNode.GetProperty("weather")[0].GetProperty("main").GetString() ?? "Clear";
+
+                        dynamicItem.HighTemp = (int)Math.Round(dayNode.GetProperty("main").GetProperty("temp_max").GetDouble());
+                        dynamicItem.LowTemp = (int)Math.Round(dayNode.GetProperty("main").GetProperty("temp_min").GetDouble());
+
+                        double popValue = dayNode.TryGetProperty("pop", out var popProp) ? popProp.GetDouble() : 0.0;
+                        dynamicItem.PrecipitationChance = (int)(popValue * 100);
+
+                        liveData.WeeklyForecast.Add(dynamicItem);
+                    }
+                }
+
+                weather = liveData;
+            }
+        }
+        catch (Exception)
+        {
+            weather = await WeatherAPI.GetLiveWeatherAsync(searchCity, currentUser?.ActiveCountry ?? "");
+        }
+
+        StateHasChanged();
+    }
+
+    private string GetMainIcon(string condition)
+    {
+        return condition switch
+        {
+            "Storm" => "bi-cloud-lightning-rain-fill",
+            "Rain" => "bi-cloud-rain-heavy-fill",
+            "Clouds" => "bi-clouds-fill",
+            "Clear" => "bi-sun-fill",
+            _ => "bi-cloud-sun-fill"
+        };
+    }
+}

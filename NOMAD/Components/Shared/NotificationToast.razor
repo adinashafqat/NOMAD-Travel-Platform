@@ -1,0 +1,168 @@
+@using NOMAD.Services
+@inject NotificationService Notifier
+@implements IDisposable
+
+<div class="nomad-toast-container">
+    @foreach (var toast in Notifier.GetActiveNotifications())
+    {
+        <div class="nomad-toast-card toast-@toast.Type.ToLower() animate-slideIn" @key="toast.Id">
+            <div class="toast-indicator-strip"></div>
+
+            <div class="toast-icon-wrapper">
+                <i class="bi @toast.Icon"></i>
+            </div>
+
+            <div class="toast-content-wrapper">
+                <strong class="toast-title-text">@toast.Title</strong>
+                <span class="toast-message-text">@toast.Message</span>
+            </div>
+
+            <button type="button" class="toast-close-btn" @onclick="() => DismissNotification(toast.Id)" aria-label="Dismiss alert">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    }
+</div>
+
+<style>
+    .nomad-toast-container {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        max-width: 400px;
+        width: calc(100% - 50px);
+        pointer-events: none;
+    }
+
+    .nomad-toast-card {
+        pointer-events: auto;
+        display: flex;
+        align-items: flex-start;
+        background: rgba(11, 35, 22, 0.95); 
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 16px 14px 16px 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+    }
+
+    .nomad-toast-card:hover {
+        transform: translateX(-4px);
+        border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .toast-indicator-strip {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 4px;
+        background: #D4AF37;
+    }
+
+    .toast-icon-wrapper {
+        margin-right: 14px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .toast-info .toast-indicator-strip { background: #D4AF37; }
+    .toast-info .toast-icon-wrapper { color: #D4AF37; }
+
+    .toast-success .toast-indicator-strip { background: #40916c; }
+    .toast-success .toast-icon-wrapper { color: #40916c; }
+
+    .toast-warning .toast-indicator-strip { background: #C5A028; }
+    .toast-warning .toast-icon-wrapper { color: #C5A028; }
+
+    .toast-danger .toast-indicator-strip { background: #D32F2F; }
+    .toast-danger .toast-icon-wrapper { color: #D32F2F; }
+
+    .toast-content-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding-right: 12px;
+    }
+
+    .toast-title-text {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #FFFFFF;
+        margin-bottom: 4px;
+    }
+
+    .toast-message-text {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.45;
+    }
+
+    .toast-close-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease, transform 0.2s ease;
+        margin-top: -2px;
+        margin-right: -4px;
+    }
+
+    .toast-close-btn:hover {
+        color: #FFFFFF;
+        transform: scale(1.15);
+    }
+
+    .animate-slideIn {
+        animation: toast-slide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @@keyframes toast-slide {
+        from {
+            opacity: 0;
+            transform: translateX(60px) scale(0.96);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+</style>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Notifier.OnNotify += OnNotifyStateChanged;
+    }
+
+    private void OnNotifyStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void DismissNotification(string id)
+    {
+        Notifier.RemoveAlert(id);
+    }
+
+    public void Dispose()
+    {
+        Notifier.OnNotify -= OnNotifyStateChanged;
+    }
+}

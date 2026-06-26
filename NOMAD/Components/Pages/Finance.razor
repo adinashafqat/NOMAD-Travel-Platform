@@ -1,0 +1,204 @@
+@page "/finance"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NOMAD.Services
+@using NOMAD.Models
+@attribute [Authorize]
+@rendermode InteractiveServer
+@inject FinanceService FinanceAPI
+@inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
+
+<PageTitle>NOMAD — Expense Intelligence</PageTitle>
+
+<div class="finance-container animate-fadeIn">
+
+    <div class="dashboard-header" style="margin-bottom: 2rem;">
+        <h1 class="text-gradient">Financial Hub</h1>
+        <p class="dashboard-subtitle">Real-time budget tracking, travel expense analytics, and resource forecasting.</p>
+    </div>
+
+    <div class="map-layout mb-4" style="grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+
+        <div class="hud-panel glass-panel d-flex flex-column justify-content-center" style="padding: 2rem;">
+            <h3 class="panel-heading"><i class="bi bi-wallet2 text-accent"></i> TOTAL EXPENDITURE</h3>
+            <div class="text-gradient mt-2" style="font-size: 2.5rem; font-weight: 800; font-family: monospace; letter-spacing: -0.5px;">
+                $@totalSpent.ToString("N2") <span style="font-size: 1rem; color: #64748b; font-family: var(--font-body); font-weight: 600;">USD</span>
+            </div>
+            <div class="budget-progress mt-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-secondary);">Budget Limit: $3,000</span>
+                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--color-accent);">@((totalSpent / 3000 * 100).ToString("N0"))% Used</span>
+                </div>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar-track" style="background: rgba(15,23,42,0.1); height: 8px; border-radius: 4px;">
+                        <div class="progress-bar-fill" style="width: @(Math.Min((totalSpent/3000 * 100), 100))%; background: var(--color-accent); height: 100%; border-radius: 4px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-panel glass-panel" style="padding: 2rem;">
+            <h3 class="panel-heading"><i class="bi bi-plus-circle-fill text-accent"></i> LOG TRANSACTION</h3>
+            <EditForm Model="newExpense" OnValidSubmit="AddExpense" class="expense-form">
+                <div class="form-row-nomad mt-3" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem;">
+                    <div class="form-group-nomad">
+                        <label class="nomad-label">DESCRIPTION</label>
+                        <div class="input-with-icon">
+                            <i class="bi bi-pen search-icon-left"></i>
+                            <InputText @bind-Value="newExpense.Title" class="nomad-input" style="padding-left: 2.25rem;" placeholder="E.g., Taxi to airport" />
+                        </div>
+                    </div>
+                    <div class="form-group-nomad">
+                        <label class="nomad-label">AMOUNT (USD)</label>
+                        <div class="input-with-icon">
+                            <i class="bi bi-currency-dollar search-icon-left"></i>
+                            <InputNumber @bind-Value="newExpense.Amount" class="nomad-input" style="padding-left: 2.25rem;" />
+                        </div>
+                    </div>
+                    <div class="form-group-nomad">
+                        <label class="nomad-label">CATEGORY</label>
+                        <InputSelect @bind-Value="newExpense.Category" class="nomad-input">
+                            <option value="">Select Category...</option>
+                            <option value="Hotels">Hotels</option>
+                            <option value="Food">Food & Dining</option>
+                            <option value="Transport">Transportation</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Emergencies">Emergencies</option>
+                            <option value="Misc">Miscellaneous</option>
+                        </InputSelect>
+                    </div>
+                </div>
+                <button type="submit" class="nomad-btn primary-action w-100 mt-4">
+                    <i class="bi bi-database-add me-1"></i> RECORD EXPENSE
+                </button>
+            </EditForm>
+        </div>
+
+    </div>
+
+    <div class="map-layout mb-4" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+
+        <div class="hud-panel glass-panel">
+            <h3 class="panel-heading"><i class="bi bi-pie-chart-fill text-accent"></i> CATEGORY BURN RATE</h3>
+            <div class="chart-container mt-3" style="position: relative; height: 250px; width: 100%;">
+                <canvas id="categoryPieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="hud-panel glass-panel">
+            <h3 class="panel-heading"><i class="bi bi-graph-up-arrow text-accent"></i> 7-DAY SPENDING VELOCITY</h3>
+            <div class="chart-container mt-3" style="position: relative; height: 250px; width: 100%;">
+                <canvas id="spendingLineChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="map-layout" style="grid-template-columns: 1fr; gap: 1.5rem;">
+        <div class="hud-panel glass-panel" style="max-height: 400px; overflow: hidden; display: flex; flex-direction: column;">
+            <h3 class="panel-heading mb-3"><i class="bi bi-receipt-cutoff text-accent"></i> SECURE ASSET LEDGER</h3>
+            <div class="history-list scroll-container flex-grow-1" style="overflow-y: auto; padding-right: 5px;">
+                @foreach (var item in expenses)
+                {
+                    <div class="checkpoint-item mb-2" style="justify-content: space-between; align-items: center; padding: 12px 15px;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-wrapper" style="background: @(item.Color)20; color: @item.Color; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                                <i class="bi @item.Icon"></i>
+                            </div>
+                            <div class="cp-details">
+                                <span class="cp-name" style="font-size: 0.95rem;">@item.Title</span>
+                                <span class="cp-status" style="font-size: 0.75rem;">@item.Date.ToString("MMM dd, yyyy - HH:mm") • @item.Category</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <strong style="font-size: 1.1rem; color: var(--color-primary); font-family: monospace;">$@item.Amount.ToString("N2")</strong>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private ExpenseRecord newExpense = new ExpenseRecord { Date = DateTime.Now };
+    private List<ExpenseRecord> expenses = new();
+    private decimal totalSpent = 0;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private ApplicationUser? currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState != null)
+        {
+            var authState = await AuthState;
+            var userPrincipal = authState.User;
+            if (userPrincipal.Identity?.IsAuthenticated == true)
+            {
+                currentUser = await UserManager.GetUserAsync(userPrincipal);
+                if (currentUser != null && !string.IsNullOrWhiteSpace(currentUser.ActiveDestination))
+                {
+                    var currentExpenses = FinanceAPI.GetExpenses();
+                    var meta = DashboardService.Resolve(currentUser.ActiveDestination, currentUser.ActiveCountry ?? "");
+                    if (!currentExpenses.Any() || currentExpenses.Any(e => e.Currency != meta.Currency))
+                    {
+                        FinanceAPI.SeedForDestination(currentUser.ActiveDestination, currentUser.ActiveCountry ?? "");
+                    }
+                }
+            }
+        }
+        RefreshData();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await RenderCharts();
+        }
+    }
+
+    private void RefreshData()
+    {
+        expenses = FinanceAPI.GetExpenses();
+        totalSpent = FinanceAPI.GetTotalSpent();
+    }
+
+    private async Task RenderCharts()
+    {
+        try
+        {
+            var breakdown = FinanceAPI.GetSpendingByCategory();
+            var labels = breakdown.Keys.ToArray();
+            var data = breakdown.Values.ToArray();
+            var colors = labels.Select(l => FinanceAPI.GetCategoryColor(l)).ToArray();
+
+            await JS.InvokeVoidAsync("nomadCharts.renderPieChart", "categoryPieChart", labels, data, colors);
+
+            var days = new[] { "Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Today" };
+            var lineData = FinanceAPI.GetDailySpendingPattern().ToArray();
+            await JS.InvokeVoidAsync("nomadCharts.renderLineChart", "spendingLineChart", days, lineData);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error rendering charts: {ex.Message}");
+        }
+    }
+
+    private async Task AddExpense()
+    {
+        newExpense.Color = FinanceAPI.GetCategoryColor(newExpense.Category);
+        newExpense.Icon = FinanceAPI.GetCategoryIcon(newExpense.Category);
+
+        FinanceAPI.AddExpense(newExpense);
+        newExpense = new ExpenseRecord { Date = DateTime.Now };
+
+        RefreshData();
+        await RenderCharts();
+    }
+}

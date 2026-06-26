@@ -1,0 +1,61 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\NOMAD.bundle.scp.css",
+      "PackagePath": "staticwebassets\\NOMAD.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\css\\nomad.css",
+      "PackagePath": "staticwebassets\\css\\nomad.css"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\js\\chartInterop.js",
+      "PackagePath": "staticwebassets\\js\\chartInterop.js"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\js\\mapInterop.js",
+      "PackagePath": "staticwebassets\\js\\mapInterop.js"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\js\\speechInterop.js",
+      "PackagePath": "staticwebassets\\js\\speechInterop.js"
+    },
+    {
+      "Id": "C:\\Users\\HP\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\js\\storageInterop.js",
+      "PackagePath": "staticwebassets\\js\\storageInterop.js"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.NOMAD.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.NOMAD.props",
+      "PackagePath": "build\\NOMAD.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.NOMAD.props",
+      "PackagePath": "buildMultiTargeting\\NOMAD.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.NOMAD.props",
+      "PackagePath": "buildTransitive\\NOMAD.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

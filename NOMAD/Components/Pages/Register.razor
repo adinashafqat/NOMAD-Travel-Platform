@@ -1,0 +1,223 @@
+@page "/register"
+@layout AuthLayout
+@attribute [AllowAnonymous]
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+
+<PageTitle>NOMAD — Register</PageTitle>
+
+<div class="auth-hero">
+    <div class="auth-hero-bg" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80');"></div>
+    <div class="auth-hero-content">
+        <h1>Begin Your Journey.</h1>
+        <p style="font-size: 1.25rem; opacity: 0.95; line-height: 1.6; font-family: var(--font-body);">Join a world-class network of modern explorers. Secure offline travel credentials, offline translations, and premium routing intelligence.</p>
+    </div>
+</div>
+
+<div class="auth-form-side">
+    <div class="auth-card glass-panel animate-fadeIn" style="max-width: 540px;">
+        <div class="auth-logo">
+            <h1 class="text-gradient">NOMAD</h1>
+            <p>Create Explorer Account</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert-nomad alert-error">
+                <i class="bi bi-exclamation-triangle"></i> @errorMessage
+            </div>
+        }
+
+        <EditForm Model="registerModel" OnValidSubmit="HandleRegister" FormName="RegisterForm" Enhance="false">
+            <DataAnnotationsValidator />
+
+            <div class="form-group-nomad">
+                <label class="nomad-label">FULL NAME</label>
+                <InputText class="nomad-input" @bind-Value="registerModel.FullName" placeholder="Your explorer name" />
+                <ValidationMessage For="@(() => registerModel.FullName)" />
+            </div>
+
+            <div class="form-group-nomad">
+                <label class="nomad-label">EMAIL ADDRESS</label>
+                <InputText class="nomad-input" @bind-Value="registerModel.Email" placeholder="pilot@nomad.travel" />
+                <ValidationMessage For="@(() => registerModel.Email)" />
+            </div>
+
+            <div class="form-row-nomad">
+                <div class="form-group-nomad">
+                    <label class="nomad-label">PASSWORD</label>
+                    <div class="nomad-password-wrapper">
+                        <input @key="showPassword" type="@(showPassword ? "text" : "password")" class="nomad-input" @bind="registerModel.Password" @bind:event="oninput" placeholder="Create passkey" />
+                        <button type="button" class="nomad-eye-toggle" @onclick="TogglePasswordVisibility" aria-label="Toggle password visibility">
+                            <i class="bi @(showPassword ? "bi-eye-slash-fill" : "bi-eye-fill")"></i>
+                        </button>
+                    </div>
+                    <ValidationMessage For="@(() => registerModel.Password)" />
+                </div>
+                <div class="form-group-nomad">
+                    <label class="nomad-label">CONFIRM PASSWORD</label>
+                    <div class="nomad-password-wrapper">
+                        <input @key="showConfirmPassword" type="@(showConfirmPassword ? "text" : "password")" class="nomad-input" @bind="registerModel.ConfirmPassword" @bind:event="oninput" placeholder="Confirm passkey" />
+                        <button type="button" class="nomad-eye-toggle" @onclick="ToggleConfirmPasswordVisibility" aria-label="Toggle password visibility">
+                            <i class="bi @(showConfirmPassword ? "bi-eye-slash-fill" : "bi-eye-fill")"></i>
+                        </button>
+                    </div>
+                    <ValidationMessage For="@(() => registerModel.ConfirmPassword)" />
+                </div>
+            </div>
+
+            <div class="form-row-nomad">
+                <div class="form-group-nomad">
+                    <label class="nomad-label">NATIONALITY</label>
+                    <InputText class="nomad-input" @bind-Value="registerModel.Nationality" placeholder="Country of origin" />
+                </div>
+                <div class="form-group-nomad">
+                    <label class="nomad-label">CURRENCY</label>
+                    <InputSelect class="nomad-input" @bind-Value="registerModel.PreferredCurrency">
+                        <option value="USD">USD — US Dollar</option>
+                        <option value="EUR">EUR — Euro</option>
+                        <option value="GBP">GBP — British Pound</option>
+                        <option value="PKR">PKR — Pakistani Rupee</option>
+                        <option value="INR">INR — Indian Rupee</option>
+                        <option value="AED">AED — Emirati Dirham</option>
+                        <option value="JPY">JPY — Japanese Yen</option>
+                    </InputSelect>
+                </div>
+            </div>
+
+            <div class="form-group-nomad">
+                <label class="nomad-label">LANGUAGE</label>
+                <InputSelect class="nomad-input" @bind-Value="registerModel.PreferredLanguage">
+                    <option value="English">English</option>
+                    <option value="Urdu">Urdu</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="French">French</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Chinese">Chinese</option>
+                </InputSelect>
+            </div>
+
+            <button type="submit" class="nomad-btn" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner"></span>
+                }
+                else
+                {
+                    <span><i class="bi bi-rocket-takeoff"></i> LAUNCH ACCOUNT</span>
+                }
+            </button>
+        </EditForm>
+
+        <div class="auth-footer">
+            <p>Already an explorer? <a href="/login" class="auth-link">Login here</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nomad-password-wrapper {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+
+    .nomad-password-wrapper .nomad-input {
+        width: 100% !important;
+        padding-right: 46px !important;
+        box-sizing: border-box !important;
+    }
+
+    .nomad-eye-toggle {
+        position: absolute !important;
+        right: 14px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: none !important;
+        border: none !important;
+        color: #ffffff !important;
+        opacity: 0.75 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 4px !important;
+        z-index: 100 !important;
+    }
+
+    .nomad-eye-toggle:hover {
+        opacity: 1 !important;
+        color: #D4AF37 !important;
+    }
+
+    .nomad-eye-toggle i {
+        font-size: 1.25rem !important;
+        display: block !important;
+    }
+</style>
+
+@code {
+    [SupplyParameterFromForm]
+    private RegisterDto registerModel { get; set; } = new();
+    private string? errorMessage;
+    private bool showPassword = false;
+    private bool showConfirmPassword = false;
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    private void ToggleConfirmPasswordVisibility()
+    {
+        showConfirmPassword = !showConfirmPassword;
+    }
+    private bool isLoading = false;
+
+    private async Task HandleRegister()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            var user = new ApplicationUser
+                {
+                    UserName = registerModel.Email,
+                    Email = registerModel.Email,
+                    FullName = registerModel.FullName,
+                    Nationality = registerModel.Nationality,
+                    PreferredLanguage = registerModel.PreferredLanguage,
+                    PreferredCurrency = registerModel.PreferredCurrency,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+            var result = await UserManager.CreateAsync(user, registerModel.Password);
+            if (result.Succeeded)
+            {
+                Navigation.NavigateTo("/login?registered=true", forceLoad: true);
+            }
+            else
+            {
+                errorMessage = string.Join(" ", result.Errors.Select(e => e.Description));
+            }
+        }
+        catch (Microsoft.AspNetCore.Components.NavigationException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"System error during registration: {ex.Message}";
+            Console.WriteLine($"[REGISTRATION ERROR]: {ex}");
+        }
+
+        isLoading = false;
+    }
+}

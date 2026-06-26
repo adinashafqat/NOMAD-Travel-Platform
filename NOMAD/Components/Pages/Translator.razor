@@ -1,0 +1,214 @@
+@page "/translate"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NOMAD.Services
+@using NOMAD.Models
+@attribute [Authorize]
+@rendermode InteractiveServer
+@inject CultureService CultureAPI
+@inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
+
+<PageTitle>NOMAD — Universal Translator</PageTitle>
+
+<div class="translator-container animate-fadeIn" style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+
+    <div class="dashboard-header" style="margin-bottom: 2rem;">
+        <h1 class="text-gradient">Universal Translator</h1>
+        <p class="dashboard-subtitle">Real-time linguistic decryption and emergency broadcast system.</p>
+    </div>
+
+    <div class="widget glass-panel mb-4 animate-fadeIn" style="padding: 1.25rem 1.75rem; background: linear-gradient(135deg, rgba(45, 74, 67, 0.25) 0%, rgba(226, 167, 111, 0.05) 100%); border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 12px; border-radius: 12px;">
+        <i class="bi bi-cpu text-accent" style="font-size: 1.25rem;"></i>
+        <span style="font-size: 0.9rem; color: var(--color-text-muted);">
+            Linguistic node synchronized to coordinates: <strong style="color: #ffffff;">@(currentUser?.ActiveDestination ?? "Istanbul"), @(currentUser?.ActiveCountry ?? "Turkey")</strong>
+        </span>
+    </div>
+
+    <div class="map-layout" style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.75rem;">
+
+        <div class="hud-panel glass-panel" style="background: rgba(11, 35, 22, 0.35); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 1.75rem;">
+            <h3 class="panel-heading" style="font-size: 1.1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 0.85rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px;"><i class="bi bi-translate text-accent"></i> LINGUISTIC DECRYPTION CORE</h3>
+
+            <div class="translation-engine mt-3">
+                <div class="language-selector d-flex align-items-center justify-content-between mb-4 p-3" style="background: rgba(11, 35, 22, 0.5); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px;">
+                    <span class="lang-badge active" style="font-weight: 700; font-family: monospace; letter-spacing: 0.5px; color: #ffffff;">English</span>
+                    <i class="bi bi-arrow-left-right text-accent" style="font-size: 1.1rem;"></i>
+                    <span class="lang-badge active" style="font-weight: 700; font-family: monospace; letter-spacing: 0.5px; color: var(--color-accent);">@targetLanguageDisplay</span>
+                </div>
+
+                <div class="form-group-nomad">
+                    <label class="nomad-label" style="font-size: 0.75rem; font-family: monospace; color: rgba(255,255,255,0.4); letter-spacing: 1px;">ORIGIN TRANSMISSION</label>
+                    <textarea class="nomad-input" rows="4" placeholder="Enter text to translate..." @bind="inputText" @bind:event="oninput" style="resize: none; padding: 1rem; background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.08); color: #ffffff; width: 100%; border-radius: 8px; margin-top: 4px;"></textarea>
+                </div>
+
+                <button class="nomad-btn primary-action w-100 mt-3" @onclick="async () => await ExecuteTranslation()">
+                    <i class="bi bi-lightning-charge-fill me-1"></i> INITIATE DECRYPTION
+                </button>
+
+                @if (!string.IsNullOrEmpty(outputText))
+                {
+                    <div class="translation-result mt-4 animate-fadeIn border-top-divider pt-4" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="nomad-label text-accent" style="margin: 0; font-size: 0.75rem; font-family: monospace; letter-spacing: 1px;">DECRYPTED OUTPUT</label>
+                            <button class="nomad-btn secondary-action" style="padding: 4px 14px; font-size: 0.85rem; background: rgba(226, 167, 111, 0.1); border-color: rgba(226, 167, 111, 0.25); color: #ffffff;" @onclick="PlayTranslation">
+                                <i class="bi bi-volume-up-fill me-1" style="color: var(--color-accent);"></i> LISTEN
+                            </button>
+                        </div>
+                        <div class="result-box p-4 mt-2" style="background: rgba(226,167,111,0.05); border: 1px solid rgba(226,167,111,0.2); border-radius: 10px; font-size: 1.2rem; color: #ffffff; font-weight: 500; line-height: 1.5;">
+                            @outputText
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="hud-panel glass-panel" style="background: rgba(11, 35, 22, 0.35); border: 1px solid rgba(216,90,90,0.25); border-radius: 16px; padding: 1.75rem;">
+            <h3 class="panel-heading" style="color: #f87171; font-size: 1.1rem; border-bottom: 1px solid rgba(216,90,90,0.1); padding-bottom: 0.85rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px;"><i class="bi bi-exclamation-triangle-fill"></i> EMERGENCY BROADCAST</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 1.25rem; color: rgba(255,255,255,0.5); font-family: monospace;">Tap to immediately synthesize localized audio overrides.</p>
+
+            <div class="phrases-list scroll-container" style="max-height: 480px; overflow-y: auto; padding-right: 5px;">
+                @foreach (var phrase in emergencyPhrases)
+                {
+                    <div class="checkpoint-item mb-3 flex-column align-items-start" style="padding: 14px; background: rgba(216,90,90,0.04); border: 1px solid rgba(216,90,90,0.12); border-radius: 10px; cursor: pointer; transition: all 0.2s ease; display: flex; width: 100%; box-sizing: border-box;" @onclick="() => PlayTTS(phrase.Translated)">
+                        <div class="d-flex justify-content-between align-items-start w-100">
+                            <span class="cp-name" style="font-size: 0.95rem; font-weight: 600; color: #f87171;">@phrase.English</span>
+                            <i class="bi bi-megaphone-fill" style="font-size: 0.95rem; color: #f87171; opacity: 0.7;"></i>
+                        </div>
+                        <div class="mt-2 w-100 p-2" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.03); border-radius: 6px;">
+                            <strong style="color: #ffffff; font-size: 1rem; display: block;">@phrase.Translated</strong>
+                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.4); font-family: monospace; margin-top: 4px;">@phrase.Pronunciation</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string inputText = "";
+    private string outputText = "";
+    private string targetLanguageDisplay = "Local Language";
+    private List<EmergencyPhrase> emergencyPhrases = new();
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private ApplicationUser? currentUser;
+    private DestinationMetadata? activeMeta;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState != null)
+        {
+            var authState = await AuthState;
+            var userPrincipal = authState.User;
+            if (userPrincipal.Identity?.IsAuthenticated == true)
+            {
+                currentUser = await UserManager.GetUserAsync(userPrincipal);
+            }
+        }
+
+        var city = currentUser?.ActiveDestination ?? "Istanbul";
+        var country = currentUser?.ActiveCountry ?? "Turkey";
+        
+        activeMeta = DashboardService.Resolve(city, country);
+        emergencyPhrases = CultureAPI.GetEmergencyPhrases(city, country);
+
+        SetTargetLanguageLabel(city, country);
+    }
+
+    private void SetTargetLanguageLabel(string city, string country)
+    {
+        string normalizedCity = city.ToLower().Trim();
+        string normalizedCountry = country.ToLower().Trim();
+
+        if (normalizedCity.Contains("lahore") || normalizedCountry.Contains("pakistan"))
+        {
+            targetLanguageDisplay = "Urdu (UR)";
+        }
+        else if (normalizedCity.Contains("tokyo") || normalizedCity.Contains("kyoto") || normalizedCountry.Contains("japan"))
+        {
+            targetLanguageDisplay = "Japanese (JA)";
+        }
+        else if (normalizedCity.Contains("paris") || normalizedCountry.Contains("france"))
+        {
+            targetLanguageDisplay = "French (FR)";
+        }
+        else
+        {
+            if (activeMeta != null && !string.IsNullOrWhiteSpace(activeMeta.LanguageCode))
+            {
+                var chunk = activeMeta.LanguageCode.Split('-').LastOrDefault() ?? "Local";
+                targetLanguageDisplay = $"Local ({chunk.ToUpper()})";
+            }
+            else
+            {
+                targetLanguageDisplay = "Local Language";
+            }
+        }
+    }
+
+    private async Task ExecuteTranslation()
+    {
+        if (string.IsNullOrWhiteSpace(inputText))
+        {
+            outputText = "";
+            return;
+        }
+
+        outputText = "Decrypting transmission signals...";
+        StateHasChanged();
+
+        try
+        {
+            string targetLangCode = "tr";
+            if (targetLanguageDisplay != null)
+            {
+                if (targetLanguageDisplay.Contains("UR")) targetLangCode = "ur";
+                else if (targetLanguageDisplay.Contains("JA")) targetLangCode = "ja";
+                else if (targetLanguageDisplay.Contains("FR")) targetLangCode = "fr";
+            }
+            else if (activeMeta != null && !string.IsNullOrWhiteSpace(activeMeta.LanguageCode))
+            {
+                targetLangCode = activeMeta.LanguageCode.Split('-').FirstOrDefault() ?? "tr";
+            }
+            string sanitizedInput = Uri.EscapeDataString(inputText);
+
+            var result = await JS.InvokeAsync<string>("eval", $@"
+                fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl={targetLangCode}&dt=t&q={sanitizedInput}')
+                    .then(res => res.json())
+                    .then(data => {{
+                        if (data && data[0]) {{
+                            return data[0].map(x => x[0]).join('');
+                        }}
+                        return 'Empty payload structure.';
+                    }})
+                    .catch(() => 'Linguistic network timeout.')
+            ");
+
+            outputText = result;
+        }
+        catch (Exception ex)
+        {
+            outputText = "[API Error] Signal decryption failed.";
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task PlayTranslation()
+    {
+        if (!string.IsNullOrEmpty(outputText))
+        {
+            await PlayTTS(outputText);
+        }
+    }
+
+    private async Task PlayTTS(string text)
+    {
+        var langCode = activeMeta?.LanguageCode ?? "tr-TR";
+        await JS.InvokeVoidAsync("nomadSpeech.speak", text, langCode);
+    }
+}

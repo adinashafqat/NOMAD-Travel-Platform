@@ -1,0 +1,342 @@
+@page "/offline"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NOMAD.Services
+@using NOMAD.Models
+@attribute [Authorize]
+@rendermode InteractiveServer
+@inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
+
+<PageTitle>NOMAD — Offline Intel Vault</PageTitle>
+
+<div class="offline-container animate-fadeIn">
+
+    <div class="dashboard-header" style="margin-bottom: 2rem;">
+        <h1 class="text-gradient">Offline Intel Cards</h1>
+        <p class="dashboard-subtitle">Encrypted local cache for critical safety data, emergency phrases, and reservations when grid connectivity is lost.</p>
+    </div>
+
+    <div class="widget glass-panel mb-4" style="padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; border: 1px solid rgba(212,175,55,0.15);">
+        <div>
+            <h3 class="m-0 text-gradient" style="font-size: 1.25rem; font-family: var(--font-display); font-weight: bold; letter-spacing: 0.5px;">
+                <i class="bi bi-hdd-network-fill" style="color: var(--color-primary);"></i> LOCAL VAULT STATUS: SECURE ENCRYPTED
+            </h3>
+            <span style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Persisted securely in local browser storage sandbox. Intel access remains active fully off-grid.</span>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <button class="nomad-btn" style="background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.2); color: #fff;" @onclick="OpenCreationForm">
+                <i class="bi bi-plus-lg" style="color: var(--color-primary);"></i> INJECT CARD VECTOR
+            </button>
+        </div>
+    </div>
+
+    @if (showAddForm)
+    {
+        <div class="widget glass-panel mb-4 animate-fadeIn" style="padding: 1.75rem; border: 1px solid rgba(212,175,55,0.25); background: rgba(11,35,22,0.65);">
+            <h3 class="widget-title" style="border-bottom: 1px solid rgba(212,175,55,0.15); padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+                <i class="bi bi-node-plus-fill" style="color: var(--color-primary);"></i> Initialize New Vault Card Entry
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label class="nomad-label" style="font-size: 0.75rem;">CLASSIFICATION LAYER</label>
+                    <select class="nomad-input" style="width: 100%; background: var(--color-secondary); color: #fff;" @bind="newCardType">
+                        <option value="Hotel" style="background: var(--color-secondary);">Hotel / Lodging Habitat</option>
+                        <option value="Route" style="background: var(--color-secondary);">Route Coordinate LZ</option>
+                        <option value="Embassy" style="background: var(--color-secondary);">Diplomatic Consulate Haven</option>
+                        <option value="Medical" style="background: var(--color-secondary);">Medical / Clinical Node</option>
+                        <option value="Phrase" style="background: var(--color-secondary);">Emergency Phrase String</option>
+                        <option value="Custom" style="background: var(--color-secondary);">General Operational Intel</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="nomad-label" style="font-size: 0.75rem;">ENTRY DESIGNATION TITLE</label>
+                    <input type="text" class="nomad-input" style="width: 100%;" placeholder="e.g., Sector Basecamp alpha" @bind="newCardTitle" />
+                </div>
+                <div>
+                    <label class="nomad-label" style="font-size: 0.75rem;">GEOLOCATION TAG / METADATA</label>
+                    <input type="text" class="nomad-input" style="width: 100%;" placeholder="e.g., Grid Ref / Zone Coordinates" @bind="newCardMeta" />
+                </div>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label class="nomad-label" style="font-size: 0.75rem;">ENCRYPTED STRATEGIC CONTENT payload</label>
+                <textarea class="nomad-input" rows="3" style="width: 100%;" placeholder="Input operational addresses, security codes, keys or instructions..." @bind="newCardContent"></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="nomad-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);" @onclick="CancelCreation">ABORT DETACH</button>
+                <button class="nomad-btn" @onclick="SaveCustomCard"><i class="bi bi-shield-lock-fill"></i> COMMIT TO STORAGE</button>
+            </div>
+        </div>
+    }
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+        @if (offlineCards.Any())
+        {
+            @foreach (var card in offlineCards)
+            {
+                <div class="widget glass-panel card-item animate-fadeIn" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(255,255,255,0.06); transition: border-color 0.3s, transform 0.3s;" onmouseover="this.style.borderColor='rgba(212,175,55,0.25)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div style="background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.18); border-radius: 6px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; color: var(--color-primary); font-size: 1.15rem;">
+                                <i class="bi @card.Icon"></i>
+                            </div>
+                            <span style="font-family: var(--font-display); font-size: 0.75rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.05); color: var(--color-primary); padding: 0.2rem 0.6rem; border-radius: 4px; letter-spacing: 0.5px;">
+                                @(card.Type != null ? card.Type.ToUpper() : "CUSTOM")
+                            </span>
+                        </div>
+
+                        <h4 style="color: #fff; font-family: var(--font-body); font-weight: 600; font-size: 1.1rem; margin: 0 0 0.35rem 0;">@card.Title</h4>
+                        <span style="font-family: monospace; font-size: 0.75rem; color: rgba(212,175,55,0.65); display: block; margin-bottom: 0.85rem;">
+                            <i class="bi bi-geo-alt"></i> @card.MetaData
+                        </span>
+
+                        <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; line-height: 1.55; margin: 0; background: rgba(0,0,0,0.15); padding: 0.75rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.03); word-break: break-all;">
+                            @card.Content
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.85rem;">
+                        <button style="background: none; border: none; color: #dc3545; opacity: 0.65; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 4px; padding: 0.25rem 0.5rem;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.65'" @onclick="() => DeleteCard(card)">
+                            <i class="bi bi-trash3"></i> PURGE NODE
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;" class="widget glass-panel">
+                <i class="bi bi-folder-symlink" style="font-size: 2.5rem; color: rgba(255,255,255,0.15); display: block; margin-bottom: 1rem;"></i>
+                <h4 style="color: rgba(255,255,255,0.4); font-family: var(--font-display); font-size: 1.05rem; letter-spacing: 0.5px;">VAULT INDEX ARRAY EMPTY</h4>
+                <p style="color: rgba(255,255,255,0.25); font-size: 0.85rem; max-width: 400px; margin: 0.25rem auto 0 auto;">No off-grid cache structures detected. Use the "Inject Card Vector" control mechanism above to configure data arrays.</p>
+            </div>
+        }
+    </div>
+
+</div>
+
+@code {
+    private List<OfflineCard> offlineCards = new();
+    private bool showAddForm = false;
+
+    private string newCardType = "Hotel";
+    private string newCardTitle = "";
+    private string newCardMeta = "";
+    private string newCardContent = "";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private ApplicationUser? currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState != null)
+        {
+            var authState = await AuthState;
+            var userPrincipal = authState.User;
+            if (userPrincipal.Identity?.IsAuthenticated == true)
+            {
+                currentUser = await UserManager.GetUserAsync(userPrincipal);
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadOfflineCache();
+        }
+    }
+
+    private async Task LoadOfflineCache()
+    {
+        try
+        {
+            var city = currentUser?.ActiveDestination ?? "Istanbul";
+            var country = currentUser?.ActiveCountry ?? "Turkey";
+
+            var defaultSamples = GenerateLocalSamples(city, country);
+
+            offlineCards = new List<OfflineCard>();
+            offlineCards.AddRange(defaultSamples);
+
+            var storageKey = "nomad_vault_custom";
+            var rawJson = await JS.InvokeAsync<string>("localStorage.getItem", storageKey);
+
+            if (!string.IsNullOrEmpty(rawJson))
+            {
+                var cachedCustomCards = System.Text.Json.JsonSerializer.Deserialize<List<OfflineCard>>(rawJson);
+                if (cachedCustomCards != null && cachedCustomCards.Any())
+                {
+                    var cityFilteredCustoms = cachedCustomCards
+                        .Where(c => c.MetaData != null && c.MetaData.Contains(city, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+
+                    foreach (var customCard in cityFilteredCustoms)
+                    {
+                        if (!offlineCards.Any(x => x.Title == customCard.Title && x.Content == customCard.Content))
+                        {
+                            offlineCards.Add(customCard);
+                        }
+                    }
+                }
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[VAULT CORE ERROR]: {ex.Message}");
+        }
+    }
+
+    private List<OfflineCard> GenerateLocalSamples(string city, string country)
+    {
+        var samples = new List<OfflineCard>();
+        var normCity = city.Trim().ToLower();
+
+        if (normCity.Contains("new york"))
+        {
+            samples.Add(new OfflineCard { Title = "JFK AirTrain Direct Link", Type = "Route", MetaData = "JFK Airport, New York", Content = "Access Code: 8842-SYS. Follow Track B vectors for off-grid transit validation.", Icon = "bi-map-fill" });
+            samples.Add(new OfflineCard { Title = "US Consulate Emergency Response", Type = "Embassy", MetaData = "Manhattan Station, New York", Content = "Direct Secure Line: +1 (212) 555-0199 [Priority Routing Ch. 4]", Icon = "bi-flag-fill" });
+            samples.Add(new OfflineCard { Title = "Bellevue Medical Network Hub", Type = "Medical", MetaData = "First Ave, New York", Content = "Trauma Unit Node Desk Access ID: NMD-9921", Icon = "bi-heart-pulse-fill" });
+            samples.Add(new OfflineCard { Title = "Basic Directions String", Type = "Phrase", MetaData = "Local Phrase, New York", Content = "'Where is the nearest safe-haven zone?'", Icon = "bi-chat-quote-fill" });
+        }
+        else if (normCity.Contains("london"))
+        {
+            samples.Add(new OfflineCard { Title = "St. Pancras Eurostar Conduit", Type = "Route", MetaData = "Euston Rd, London", Content = "Contingency Gate Key: C1042X. Secondary processing validation active.", Icon = "bi-map-fill" });
+            samples.Add(new OfflineCard { Title = "Mayfair Safehouse Terminal", Type = "Hotel", MetaData = "Mayfair, London", Content = "Mechanical Vault Box Sequence: 14-R, 32-L, 05-R.", Icon = "bi-building-fill" });
+            samples.Add(new OfflineCard { Title = "St Thomas' Emergency Node", Type = "Medical", MetaData = "Westminster, London", Content = "Liaison Hotline ID: UK-8812. 24/7 Priority Response.", Icon = "bi-heart-pulse-fill" });
+            samples.Add(new OfflineCard { Title = "Transit Support Request", Type = "Phrase", MetaData = "Local Phrase, London", Content = "'Please direct me to the secure underground station.'", Icon = "bi-chat-quote-fill" });
+        }
+        else if (normCity.Contains("tokyo"))
+        {
+            samples.Add(new OfflineCard { Title = "Shibuya Network Node Mesh", Type = "Route", MetaData = "Shibuya Crossing, Tokyo", Content = "SSID: NOMAD_SECURE_TYO | Passphrase: emergency-offline-2026", Icon = "bi-map-fill" });
+            samples.Add(new OfflineCard { Title = "Minato Medical Liaison Desk", Type = "Medical", MetaData = "Minato City, Tokyo", Content = "English Desk Routing Provider Ref: NMD-8143", Icon = "bi-heart-pulse-fill" });
+            samples.Add(new OfflineCard { Title = "Emergency Assistance Request", Type = "Phrase", MetaData = "Translation, Tokyo", Content = "'Koko kara ichiban chikai hinanjo wa doko desu ka?'", Icon = "bi-chat-quote-fill" });
+            samples.Add(new OfflineCard { Title = "Roppongi Safezone Access", Type = "Hotel", MetaData = "Roppongi, Tokyo", Content = "Backup Power Grid Room Master PIN: #7712*", Icon = "bi-building-fill" });
+        }
+        else 
+        {
+            samples.Add(new OfflineCard { Title = $"{city} Transit Link Alpha", Type = "Route", MetaData = $"Transit Hub, {city}", Content = "Local terminal mapping protocol operational. Safe tracking routes cached.", Icon = "bi-map-fill" });
+            samples.Add(new OfflineCard { Title = $"{city} Central Medical Clinic", Type = "Medical", MetaData = $"Medical Center, {city}", Content = "Emergency Intake Line: 112 [Quote NOMAD Travel Protocol Layer]", Icon = "bi-heart-pulse-fill" });
+            samples.Add(new OfflineCard { Title = "Universal Assistance Phrase", Type = "Phrase", MetaData = $"Translation, {city}", Content = "'Acil durum siginma yeri nerede?' (Where is the emergency shelter?)", Icon = "bi-chat-quote-fill" });
+            samples.Add(new OfflineCard { Title = $"{city} Base HQ Connection", Type = "Hotel", MetaData = $"Logistics Base, {city}", Content = "Secure room check-in fallback voucher token: #NMD-LOCAL-STB", Icon = "bi-building-fill" });
+        }
+
+        return samples;
+    }
+
+    private async Task SaveCustomCard()
+    {
+        if (string.IsNullOrWhiteSpace(newCardTitle) || string.IsNullOrWhiteSpace(newCardContent)) return;
+
+        var city = currentUser?.ActiveDestination ?? "Istanbul";
+
+        var customCard = new OfflineCard
+            {
+                Id = Guid.NewGuid().ToString(), 
+                Type = newCardType,
+                Title = newCardTitle,
+                Content = newCardContent,
+                MetaData = string.IsNullOrWhiteSpace(newCardMeta) ? $"Custom Entry — {city}" : $"{newCardMeta} ({city})",
+                Icon = GetCardIcon(newCardType)
+            };
+
+        offlineCards.Add(customCard);
+        showAddForm = false;
+
+        try
+        {
+            var storageKey = "nomad_vault_custom";
+            List<OfflineCard> masterCustomList = new();
+
+            var existingJson = await JS.InvokeAsync<string>("localStorage.getItem", storageKey);
+            if (!string.IsNullOrEmpty(existingJson))
+            {
+                masterCustomList = System.Text.Json.JsonSerializer.Deserialize<List<OfflineCard>>(existingJson) ?? new();
+            }
+
+            masterCustomList.Add(customCard);
+
+            var updatedJson = System.Text.Json.JsonSerializer.Serialize(masterCustomList);
+            await JS.InvokeVoidAsync("localStorage.setItem", storageKey, updatedJson);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[WRITE ERROR]: {ex.Message}");
+        }
+
+        newCardTitle = "";
+        newCardMeta = "";
+        newCardContent = "";
+
+        StateHasChanged();
+    }
+
+    private async Task DeleteCard(OfflineCard card)
+    {
+        if (offlineCards.Contains(card))
+        {
+            offlineCards.Remove(card);
+
+            if (!string.IsNullOrEmpty(card.Id))
+            {
+                try
+                {
+                    var storageKey = "nomad_vault_custom";
+                    var existingJson = await JS.InvokeAsync<string>("localStorage.getItem", storageKey);
+                    if (!string.IsNullOrEmpty(existingJson))
+                    {
+                        var masterCustomList = System.Text.Json.JsonSerializer.Deserialize<List<OfflineCard>>(existingJson);
+                        if (masterCustomList != null)
+                        {
+                            var itemToRemove = masterCustomList.FirstOrDefault(x => x.Id == card.Id || (x.Title == card.Title && x.Content == card.Content));
+                            if (itemToRemove != null)
+                            {
+                                masterCustomList.Remove(itemToRemove);
+                                var updatedJson = System.Text.Json.JsonSerializer.Serialize(masterCustomList);
+                                await JS.InvokeVoidAsync("localStorage.setItem", storageKey, updatedJson);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[DELETE FAULT]: {ex.Message}");
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private string GetCardIcon(string type)
+    {
+        return type switch
+        {
+            "Hotel" => "bi-building-fill",
+            "Route" => "bi-map-fill",
+            "Embassy" => "bi-flag-fill",
+            "Medical" => "bi-heart-pulse-fill",
+            "Phrase" => "bi-chat-quote-fill",
+            _ => "bi-journal-text"
+        };
+    }
+
+    private void OpenCreationForm()
+    {
+        showAddForm = true;
+        newCardType = "Hotel";
+        newCardTitle = "";
+        newCardMeta = "";
+        newCardContent = "";
+    }
+
+    private void CancelCreation()
+    {
+        showAddForm = false;
+    }
+}

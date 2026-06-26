@@ -1,0 +1,545 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Adina\\source\\repos\\NOMAD\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\services\\mapservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\services\\mapservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\map.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\map.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\wwwroot\\js\\mapinterop.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\wwwroot\\js\\mapinterop.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\layout\\authlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\layout\\authlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\models\\emergencycontact.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\models\\emergencycontact.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\emergency.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\emergency.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\culture.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\culture.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\models\\alert.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\models\\alert.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\dtos\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\dtos\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\register.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\register.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\weatherpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\weatherpage.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\translator.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\translator.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\offlinecards.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\offlinecards.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\models\\offlinecarddb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\models\\offlinecarddb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\login.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\login.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\logout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\logout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\shared\\notificationtoast.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\shared\\notificationtoast.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\services\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\services\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\profile.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\profile.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\dtos\\profileupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\dtos\\profileupdatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\redirecttologin.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\redirecttologin.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\error.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\error.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\wwwroot\\css\\nomad.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\wwwroot\\css\\nomad.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\dtos\\forgotpassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\dtos\\forgotpassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\forgotpassword.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\forgotpassword.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|c:\\users\\adina\\source\\repos\\nomad\\nomad\\components\\pages\\finance.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AB9F27B3-0257-4D74-A614-03EAEB80960A}|NOMAD\\NOMAD.csproj|solutionrelative:nomad\\components\\pages\\finance.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Models\\ApplicationUser.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\ApplicationUser.cs",
+              "RelativeToolTip": "NOMAD\\Models\\ApplicationUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T15:15:43.378Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MainLayout.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Layout\\MainLayout.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Layout\\MainLayout.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Layout\\MainLayout.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Layout\\MainLayout.razor",
+              "ViewState": "AgIAANgAAAAAAAAAAAAAAPQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T13:57:00.662Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Culture.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Culture.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Culture.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Culture.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Culture.razor",
+              "ViewState": "AgIAAIYAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:39:23.912Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Emergency.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Emergency.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Emergency.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Emergency.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Emergency.razor",
+              "ViewState": "AgIAAFUBAAAAAAAAAAAAAGUBAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:39:45.977Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MapService.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Services\\MapService.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Services\\MapService.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Services\\MapService.cs",
+              "RelativeToolTip": "NOMAD\\Services\\MapService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T16:31:29.811Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "mapInterop.js",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\js\\mapInterop.js",
+              "RelativeDocumentMoniker": "NOMAD\\wwwroot\\js\\mapInterop.js",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\js\\mapInterop.js",
+              "RelativeToolTip": "NOMAD\\wwwroot\\js\\mapInterop.js",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-05-18T17:18:49.28Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Map.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Map.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Map.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Map.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Map.razor",
+              "ViewState": "AgIAAA8CAAAAAAAAAAAswEwCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:04:41.553Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AuthLayout.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Layout\\AuthLayout.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Layout\\AuthLayout.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Layout\\AuthLayout.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Layout\\AuthLayout.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:00:38.735Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "EmergencyContact.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\EmergencyContact.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Models\\EmergencyContact.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\EmergencyContact.cs",
+              "RelativeToolTip": "NOMAD\\Models\\EmergencyContact.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T15:15:38.57Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "RegisterDto.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\RegisterDto.cs",
+              "RelativeDocumentMoniker": "NOMAD\\DTOs\\RegisterDto.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\RegisterDto.cs",
+              "RelativeToolTip": "NOMAD\\DTOs\\RegisterDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T17:45:24.864Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Alert.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\Alert.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Models\\Alert.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\Alert.cs",
+              "RelativeToolTip": "NOMAD\\Models\\Alert.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T17:51:39.344Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Program.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Program.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Program.cs",
+              "RelativeToolTip": "NOMAD\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T17:15:54.068Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Translator.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Translator.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Translator.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Translator.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Translator.razor",
+              "ViewState": "AgIAAJkAAAAAAAAAAAAswL0AAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:24:16.888Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Home.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Home.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Home.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Home.razor",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAswCQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:03:33.745Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Register.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Register.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Register.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Register.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Register.razor",
+              "ViewState": "AgIAALQAAAAAAAAAAAAswMwAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:02:52.74Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "OfflineCards.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\OfflineCards.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\OfflineCards.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\OfflineCards.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\OfflineCards.razor",
+              "ViewState": "AgIAALUAAAAAAAAAAAAswGABAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:28:02.747Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "OfflineCardDb.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\OfflineCardDb.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Models\\OfflineCardDb.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Models\\OfflineCardDb.cs",
+              "RelativeToolTip": "NOMAD\\Models\\OfflineCardDb.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T14:59:50.844Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "WeatherPage.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\WeatherPage.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\WeatherPage.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\WeatherPage.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\WeatherPage.razor",
+              "ViewState": "AgIAAMEAAAAAAAAAAAAswM4AAABrAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:24:11.467Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Login.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Login.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Login.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Login.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Login.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE0AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:02:10.822Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Logout.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Logout.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Logout.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Logout.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Logout.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:02:26.536Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "NotificationToast.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Shared\\NotificationToast.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Shared\\NotificationToast.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Shared\\NotificationToast.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Shared\\NotificationToast.razor",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAAAJUAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T15:03:30.402Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "NOMAD\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwBgAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T15:48:13.613Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "NotificationService.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Services\\NotificationService.cs",
+              "RelativeDocumentMoniker": "NOMAD\\Services\\NotificationService.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Services\\NotificationService.cs",
+              "RelativeToolTip": "NOMAD\\Services\\NotificationService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T18:39:06.589Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Profile.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Profile.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Profile.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Profile.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Profile.razor",
+              "ViewState": "AgIAAKIAAAAAAAAAAAAAALAAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:28:03.611Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "ProfileUpdateDto.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\ProfileUpdateDto.cs",
+              "RelativeDocumentMoniker": "NOMAD\\DTOs\\ProfileUpdateDto.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\ProfileUpdateDto.cs",
+              "RelativeToolTip": "NOMAD\\DTOs\\ProfileUpdateDto.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAABcAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T15:17:09.384Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "RedirectToLogin.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\RedirectToLogin.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\RedirectToLogin.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\RedirectToLogin.razor",
+              "RelativeToolTip": "NOMAD\\Components\\RedirectToLogin.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T18:03:19.537Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Error.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Error.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Error.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Error.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Error.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:50:40.274Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "nomad.css",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\css\\nomad.css",
+              "RelativeDocumentMoniker": "NOMAD\\wwwroot\\css\\nomad.css",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\wwwroot\\css\\nomad.css",
+              "RelativeToolTip": "NOMAD\\wwwroot\\css\\nomad.css",
+              "ViewState": "AgIAAKEAAAAAAAAAAAAAAHEBAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-05-17T13:57:03.588Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "ForgotPasswordDto.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\ForgotPasswordDto.cs",
+              "RelativeDocumentMoniker": "NOMAD\\DTOs\\ForgotPasswordDto.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\ForgotPasswordDto.cs",
+              "RelativeToolTip": "NOMAD\\DTOs\\ForgotPasswordDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T15:21:52.646Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "LoginDto.cs",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\LoginDto.cs",
+              "RelativeDocumentMoniker": "NOMAD\\DTOs\\LoginDto.cs",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\DTOs\\LoginDto.cs",
+              "RelativeToolTip": "NOMAD\\DTOs\\LoginDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T15:21:50.521Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "ForgotPassword.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\ForgotPassword.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\ForgotPassword.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\ForgotPassword.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\ForgotPassword.razor",
+              "ViewState": "AgIAAJAAAAAAAAAAAAAAAKMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:28:50.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "Finance.razor",
+              "DocumentMoniker": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Finance.razor",
+              "RelativeDocumentMoniker": "NOMAD\\Components\\Pages\\Finance.razor",
+              "ToolTip": "C:\\Users\\Adina\\source\\repos\\NOMAD\\NOMAD\\Components\\Pages\\Finance.razor",
+              "RelativeToolTip": "NOMAD\\Components\\Pages\\Finance.razor",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAAAMsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-17T14:27:50.002Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

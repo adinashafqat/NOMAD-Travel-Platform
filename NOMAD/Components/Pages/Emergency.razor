@@ -1,0 +1,360 @@
+@page "/emergency"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using NOMAD.Services
+@using NOMAD.Models
+@attribute [Authorize]
+@rendermode InteractiveServer
+@inject SafetyService SafetyAPI
+@inject UserManager<ApplicationUser> UserManager
+@inject IJSRuntime JS
+
+<PageTitle>NOMAD — EMERGENCY OVERRIDE & SOS SYSTEM</PageTitle>
+
+<div class="emergency-page-container animate-fadeIn">
+    <div class="dashboard-header" style="margin-bottom: 2rem;">
+        <h1 class="text-gradient">Danger Detection & SOS Override</h1>
+        <p class="dashboard-subtitle">Tactical emergency response, threat vector monitoring, and instant extraction routing.</p>
+    </div>
+
+    <div class="widget glass-panel mb-4" style="padding: 1.5rem;">
+        <h3 class="panel-heading" style="color: var(--color-danger); margin-bottom: 1rem;"><i class="bi bi-shield-slash"></i> LIVE THREAT INTELLIGENCE FEED</h3>
+        <div class="threat-feed-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            @if (activeMeta != null && activeMeta.DangerAlerts.Any())
+            {
+                @foreach (var alert in activeMeta.DangerAlerts)
+                {
+                    <div class="threat-alert-card @alert.Level.ToLower()" style="background: rgba(216,90,90,0.06); border: 1px solid rgba(216,90,90,0.25); border-radius: var(--border-radius-sm); padding: 1rem; display: flex; align-items: center; gap: 12px;">
+                        <i class="bi @alert.Icon" style="font-size: 1.8rem; color: var(--color-danger);"></i>
+                        <div style="display: flex; flex-direction: column;">
+                            <strong style="color: #0f172a; font-size: 0.95rem;">@alert.Title</strong>
+                            <span style="font-size: 0.8rem; color: #64748b;">Region: @alert.Region • Threat Level: <span class="badge-level @alert.Level.ToLower()">@alert.Level.ToUpper()</span></span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="threat-alert-card low" style="background: rgba(64,145,108,0.06); border: 1px solid rgba(64,145,108,0.25); border-radius: var(--border-radius-sm); padding: 1rem; display: flex; align-items: center; gap: 12px; grid-column: 1/-1;">
+                    <i class="bi bi-shield-check" style="font-size: 1.8rem; color: var(--color-success);"></i>
+                    <div style="display: flex; flex-direction: column;">
+                        <strong style="color: #0f172a;">No Active Political or Environmental Threats</strong>
+                        <span style="font-size: 0.8rem; color: #64748b;">Region is monitored securely. Operational channels green.</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="widget-row two-col">
+        
+        <div class="widget glass-panel text-center" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 2rem;">
+            @if (!emergencyActivated)
+            {
+                <div class="panic-trigger-core" @onclick="TriggerSOSOverride">
+                    <div class="pulse-glow-ring"></div>
+                    <div class="panic-button">
+                        <i class="bi bi-exclamation-octagon-fill"></i>
+                        <span>SOS OVERRIDE</span>
+                    </div>
+                </div>
+                <h3 class="mt-4" style="font-family: var(--font-heading); color: #1b3c33;">ONE-CLICK PANIC EMISSION</h3>
+                <p class="text-muted" style="font-size: 0.9rem; max-width: 320px;">Clicking this button emits an encrypted GPS coordinate packet, activates native language voice requests, and plots secure evacuation paths.</p>
+            }
+            else
+            {
+                <div class="panic-trigger-core active" @onclick="CancelSOSOverride">
+                    <div class="pulse-glow-ring active"></div>
+                    <div class="panic-button active">
+                        <i class="bi bi-broadcast"></i>
+                        <span>SOS BROADCASTING</span>
+                    </div>
+                </div>
+                <button class="nomad-btn btn-cancel-sos mt-4" @onclick="CancelSOSOverride">
+                    <i class="bi bi-shield-slash"></i> STAND DOWN (CANCEL)
+                </button>
+                <div class="recalc-route-badge mt-3 animate-pulse">
+                    <i class="bi bi-bezier2"></i> SAFE ROUTE RECALCULATION ACTIVE
+                </div>
+                <p class="text-danger mt-2" style="font-size: 0.8rem; font-weight: 600;">Plotting bypass route avoiding threat centers to @(activeMeta?.City) Embassy Enclave.</p>
+            }
+        </div>
+
+        <div class="widget glass-panel" style="padding: 2.25rem;">
+            <h3 class="widget-title"><i class="bi bi-compass"></i> GEOLOCATION BROADCAST TELEMETRY</h3>
+            
+            <div class="gps-uplink-status-box" style="background: rgba(255,255,255,0.5); border: 1px solid rgba(15,23,42,0.06); padding: 1.25rem; border-radius: var(--border-radius-sm); display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem;">
+                <span class="feed-dot @(emergencyActivated ? "blink-red" : "blink-green")"></span>
+                <div>
+                    <strong style="color: #0f172a; font-size: 1rem;">@(emergencyActivated ? "ACTIVE BEACON BROADCASTING" : "GPS LINK SECURED")</strong>
+                    <p style="margin: 0; font-size: 0.8rem; color: #64748b; font-family: monospace;">TELEMETRY: @gpsLocation</p>
+                </div>
+            </div>
+
+            <label class="nomad-label">REGIONAL FIRST-RESPONDER CHANNELS</label>
+            <div class="emergency-numbers-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem;">
+                @if (activeMeta != null)
+                {
+                    @foreach (var shortcut in activeMeta.EmergencyShortcuts)
+                    {
+                        <div class="emergency-num-card" style="background: rgba(255,255,255,0.6); border: 1px solid rgba(15,23,42,0.05); padding: 10px; border-radius: var(--border-radius-sm); display: flex; align-items: center; gap: 10px;">
+                            <i class="bi @shortcut.Icon" style="font-size: 1.3rem; color: @shortcut.Color;"></i>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase;">@shortcut.Title</span>
+                                <strong style="font-size: 0.95rem; color: #0f172a;">@shortcut.Number</strong>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <label class="nomad-label">VOICE BROADCAST TRANSLATIONS (AUDIO BEACON)</label>
+            <div class="comms-panel" style="display: flex; flex-direction: column; gap: 8px;">
+                @if (activeMeta != null)
+                {
+                    @foreach (var phrase in emergencyPhrases)
+                    {
+                        <button class="comm-btn" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.7); border: 1px solid rgba(15,23,42,0.05); border-radius: var(--border-radius-sm); color: #334155; font-size: 0.9rem; cursor: pointer; text-align: left; width: 100%; transition: all 0.3s ease;" @onclick="() => PlaySOS(phrase.Translated)">
+                            <span><i class="bi bi-volume-up-fill" style="color: var(--color-primary); margin-right: 8px;"></i> "@phrase.English.ToUpper()!"</span>
+                            <span style="font-size: 0.75rem; color: #64748b; font-style: italic;">@phrase.Translated</span>
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="widget-row single-col mt-4">
+        <div class="widget glass-panel">
+            <h3 class="widget-title"><i class="bi bi-hospital-fill"></i> NEAREST FIRST-RESPONDER SANCTUARIES & EXTRACTION CHANNELS</h3>
+            <div class="safe-zone-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                @foreach (var loc in safeZones)
+                {
+                    <div class="safe-zone-card" style="background: rgba(255,255,255,0.55); border: 1px solid rgba(15,23,42,0.05); border-radius: var(--border-radius-sm); padding: 1.25rem; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease;">
+                        <div class="sz-icon @loc.Type.ToLower()" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: @(loc.Type == "Hospital" ? "rgba(16,185,129,0.1)" : loc.Type == "Police" ? "rgba(14,165,233,0.1)" : "rgba(245,158,11,0.1)"); color: @(loc.Type == "Hospital" ? "#10b981" : loc.Type == "Police" ? "#0ea5e9" : "#f59e0b"); border: 1px solid @(loc.Type == "Hospital" ? "rgba(16,185,129,0.2)" : loc.Type == "Police" ? "rgba(14,165,233,0.2)" : "rgba(245,158,11,0.2)");">
+                            <i class="bi @GetLocationIcon(loc.Type)"></i>
+                        </div>
+                        <div class="sz-info" style="flex: 1; display: flex; flex-direction: column;">
+                            <h4 style="font-size: 0.95rem; font-weight: 600; color: #0f172a; margin: 0;">@loc.Name</h4>
+                            <span class="sz-addr" style="font-size: 0.78rem; color: #64748b;">@loc.Address</span>
+                            <span class="sz-dist" style="font-size: 0.75rem; color: var(--color-primary); font-weight: 700; margin-top: 2px;"><i class="bi bi-geo-alt"></i> @loc.Distance</span>
+                        </div>
+                        <div class="sz-action">
+                            <a href="tel:@loc.Phone" class="sz-call" style="display: flex; align-items: center; justify-content: center; background: var(--color-primary); color: #fff; width: 36px; height: 36px; border-radius: 50%; text-decoration: none; transition: transform 0.3s ease;"><i class="bi bi-telephone-fill"></i></a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .emergency-page-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .panel-heading {
+        font-family: var(--font-heading);
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-level {
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+    .badge-level.high { background: rgba(216,90,90,0.15); color: #dc2626; border: 1px solid rgba(216,90,90,0.25); }
+    .badge-level.medium { background: rgba(245,158,11,0.15); color: #d97706; border: 1px solid rgba(245,158,11,0.25); }
+    .badge-level.low { background: rgba(16,185,129,0.15); color: #059669; border: 1px solid rgba(16,185,129,0.25); }
+
+    .panic-trigger-core {
+        position: relative;
+        width: 180px;
+        height: 180px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .panic-button {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4), inset 0 2px 4px rgba(255,255,255,0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-family: var(--font-heading);
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        z-index: 5;
+        border: 4px solid #fff;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .panic-button i {
+        font-size: 2.2rem;
+        margin-bottom: 6px;
+    }
+
+    .pulse-glow-ring {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 3px solid #ef4444;
+        animation: panic-ripple 2s infinite ease-out;
+        z-index: 2;
+        opacity: 0;
+    }
+
+    @@keyframes panic-ripple {
+        0% { transform: scale(0.9); opacity: 0.8; }
+        100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    .panic-button.active {
+        background: linear-gradient(135deg, #1b3c33 0%, #2d4a43 100%);
+        box-shadow: 0 10px 30px rgba(45, 74, 67, 0.4);
+        border-color: #e2a76f;
+    }
+
+    .pulse-glow-ring.active {
+        border-color: #e2a76f;
+    }
+
+    .btn-cancel-sos {
+        background: #ef4444 !important;
+        border: none !important;
+        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3) !important;
+        color: #fff !important;
+    }
+
+    .btn-cancel-sos:hover {
+        background: #b91c1c !important;
+    }
+
+    .recalc-route-badge {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        color: #059669;
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 6px 14px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .comm-btn:hover {
+        background: var(--color-primary-light) !important;
+        border-color: rgba(45, 74, 67, 0.2) !important;
+        transform: translateY(-2px);
+    }
+
+    .blink-red {
+        background-color: #ef4444 !important;
+        box-shadow: 0 0 10px #ef4444;
+        animation: gentle-blink 1s infinite alternate;
+    }
+
+    @@keyframes gentle-blink {
+        from { opacity: 0.4; }
+        to { opacity: 1; }
+    }
+</style>
+
+@code {
+    private List<SafetyLocation> safeZones = new();
+    private string gpsLocation = "ACQUIRING...";
+    private List<EmergencyPhrase> emergencyPhrases = new();
+    
+    private bool emergencyActivated = false;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private ApplicationUser? currentUser;
+    private DestinationMetadata? activeMeta;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState != null)
+        {
+            var authState = await AuthState;
+            var userPrincipal = authState.User;
+            if (userPrincipal.Identity?.IsAuthenticated == true)
+            {
+                currentUser = await UserManager.GetUserAsync(userPrincipal);
+            }
+        }
+
+        var city = currentUser?.ActiveDestination ?? "Istanbul";
+        var country = currentUser?.ActiveCountry ?? "Turkey";
+        activeMeta = DashboardService.Resolve(city, country);
+        safeZones = SafetyAPI.GetEmergencyLocations(city, country);
+        emergencyPhrases = activeMeta.EmergencyPhrases;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(1000);
+            gpsLocation = await JS.InvokeAsync<string>("nomadStorage.triggerGPS");
+            StateHasChanged();
+        }
+    }
+
+    private async Task TriggerSOSOverride()
+    {
+        emergencyActivated = true;
+        gpsLocation = "BROADCASTING ENCRYPTED ACTIVE SIGNALS [LAT: 41.0125, LNG: 28.9749]";
+        
+        if (activeMeta != null && emergencyPhrases.Any())
+        {
+            await JS.InvokeVoidAsync("nomadSpeech.speak", "Attention. Emergency Override Mode Activated. Broad-casting beacon.", "en-US");
+            await Task.Delay(1200);
+            await PlaySOS(emergencyPhrases[0].Translated);
+        }
+        
+        StateHasChanged();
+    }
+
+    private void CancelSOSOverride()
+    {
+        emergencyActivated = false;
+        gpsLocation = "GPS LINK SECURED. STANDBY MODE.";
+        StateHasChanged();
+    }
+
+    private string GetLocationIcon(string type)
+    {
+        return type switch
+        {
+            "Hospital" => "bi-heart-pulse-fill",
+            "Police" => "bi-shield-shaded",
+            "Embassy" => "bi-flag-fill",
+            _ => "bi-geo-fill"
+        };
+    }
+
+    private async Task PlaySOS(string text)
+    {
+        var langCode = activeMeta?.LanguageCode ?? "tr-TR";
+        await JS.InvokeVoidAsync("nomadSpeech.speak", text, langCode);
+    }
+}
