@@ -187,10 +187,6 @@ A persistent background notification engine that broadcasts contextual alerts th
 
 ## Screenshots
 
-> _Screenshots will be added here. Suggested views to capture:_
-
-| Screen | Description |
-|---|---|
 | Login | Authentication screens |
 <img width="1907" height="915" alt="Screenshot 2026-06-26 140107" src="https://github.com/user-attachments/assets/10c6d49b-c2b8-4e2e-baf0-82ddab38f1af" />
 
